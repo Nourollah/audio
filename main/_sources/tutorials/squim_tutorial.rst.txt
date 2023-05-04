@@ -97,8 +97,8 @@ through MOS using non-matching references.” Interspeech, 2022.
 
  .. code-block:: none
 
-    2.1.0.dev20230430
-    2.1.0.dev20230430
+    2.1.0.dev20230504
+    2.1.0a0+df5036a
 
 
 
@@ -231,7 +231,7 @@ plot data, pystoi, pesq for computing reference metrics.
 
  .. code-block:: none
 
-      0%|          | 0.00/156k [00:00<?, ?B/s]    100%|##########| 156k/156k [00:00<00:00, 58.6MB/s]
+      0%|          | 0.00/156k [00:00<?, ?B/s]    100%|##########| 156k/156k [00:00<00:00, 110MB/s]
 
 
 
@@ -633,7 +633,7 @@ Get the pre-trained ``SquimObjective``\ model.
  .. code-block:: none
 
     Downloading: "https://download.pytorch.org/torchaudio/models/squim_objective_dns2020.pth" to /root/.cache/torch/hub/checkpoints/squim_objective_dns2020.pth
-      0%|          | 0.00/28.2M [00:00<?, ?B/s]    100%|##########| 28.2M/28.2M [00:00<00:00, 439MB/s]
+      0%|          | 0.00/28.2M [00:00<?, ?B/s]    100%|##########| 28.2M/28.2M [00:00<00:00, 413MB/s]
 
 
 
@@ -723,7 +723,7 @@ SNR
 
     Estimated metrics for distorted speech at -5dB are
 
-    STOI: 0.5743247270584106
+    STOI: 0.5743248462677002
     PESQ: 1.1112866401672363
     SI-SDR: -6.248741626739502
 
@@ -764,7 +764,7 @@ Get the pre-trained ``SquimSubjective`` model.
  .. code-block:: none
 
     Downloading: "https://download.pytorch.org/torchaudio/models/squim_subjective_bvcc_daps.pth" to /root/.cache/torch/hub/checkpoints/squim_subjective_bvcc_daps.pth
-      0%|          | 0.00/360M [00:00<?, ?B/s]      3%|3         | 11.7M/360M [00:00<00:02, 123MB/s]      7%|7         | 27.0M/360M [00:00<00:02, 145MB/s]     18%|#8        | 66.6M/360M [00:00<00:01, 268MB/s]     30%|##9       | 107M/360M [00:00<00:00, 331MB/s]      42%|####1     | 150M/360M [00:00<00:00, 372MB/s]     53%|#####2    | 190M/360M [00:00<00:00, 388MB/s]     64%|######4   | 232M/360M [00:00<00:00, 406MB/s]     76%|#######6  | 274M/360M [00:00<00:00, 418MB/s]     88%|########8 | 317M/360M [00:00<00:00, 428MB/s]    100%|##########| 360M/360M [00:01<00:00, 434MB/s]    100%|##########| 360M/360M [00:01<00:00, 377MB/s]
+      0%|          | 0.00/360M [00:00<?, ?B/s]     11%|#1        | 40.2M/360M [00:00<00:00, 421MB/s]     22%|##2       | 80.5M/360M [00:00<00:00, 422MB/s]     34%|###3      | 122M/360M [00:00<00:00, 426MB/s]      45%|####5     | 163M/360M [00:00<00:00, 430MB/s]     57%|#####6    | 204M/360M [00:00<00:00, 430MB/s]     68%|######8   | 245M/360M [00:00<00:00, 429MB/s]     79%|#######9  | 286M/360M [00:00<00:00, 430MB/s]     91%|######### | 327M/360M [00:00<00:00, 430MB/s]    100%|##########| 360M/360M [00:00<00:00, 429MB/s]
 
 
 
@@ -794,7 +794,7 @@ Load a non-matching reference (NMR)
 
  .. code-block:: none
 
-      0%|          | 0.00/441k [00:00<?, ?B/s]    100%|##########| 441k/441k [00:00<00:00, 111MB/s]
+      0%|          | 0.00/441k [00:00<?, ?B/s]    100%|##########| 441k/441k [00:00<00:00, 145MB/s]
 
 
 
@@ -846,7 +846,7 @@ Compute MOS metric for distorted speech with -5dB SNR
 
  .. code-block:: none
 
-    Estimated MOS for distorted speech at -5dB is MOS: 3.291802406311035
+    Estimated MOS for distorted speech at -5dB is MOS: 3.2918035984039307
 
 
 
@@ -854,7 +854,7 @@ Compute MOS metric for distorted speech with -5dB SNR
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.151 seconds)
+   **Total running time of the script:** ( 0 minutes  6.513 seconds)
 
 
 .. _sphx_glr_download_tutorials_squim_tutorial.py:

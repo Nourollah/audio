@@ -213,7 +213,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">Nightly Build (2.1.0.dev20230430) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">Nightly Build (2.1.0a0+df5036a) &#x25BC</span></a>
     </div>
     
 
@@ -818,19 +818,19 @@ frame rate. Therefore, it is truncated to the nearest value of
 <dd><p>Codec configuration.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torchaudio.io.CodecConfig.bit_rate">
-<span class="sig-name descname"><span class="pre">bit_rate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.bit_rate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bit_rate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.bit_rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bit rate</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torchaudio.io.CodecConfig.compression_level">
-<span class="sig-name descname"><span class="pre">compression_level</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.compression_level" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">compression_level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.compression_level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compression level</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torchaudio.io.CodecConfig.qscale">
-<span class="sig-name descname"><span class="pre">qscale</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.qscale" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">qscale</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.qscale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Global quality factor. Enables variable bit rate. Valid values depend on encoder.</p>
 <p>For example: MP3 takes <code class="docutils literal notranslate"><span class="pre">0</span></code> - <code class="docutils literal notranslate"><span class="pre">9</span></code> (<a class="reference external" href="https://trac.ffmpeg.org/wiki/Encode/MP3">https://trac.ffmpeg.org/wiki/Encode/MP3</a>) while
 libvorbis takes <code class="docutils literal notranslate"><span class="pre">-1</span></code> - <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p>
@@ -838,13 +838,13 @@ libvorbis takes <code class="docutils literal notranslate"><span class="pre">-1<
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torchaudio.io.CodecConfig.gop_size">
-<span class="sig-name descname"><span class="pre">gop_size</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.gop_size" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">gop_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.gop_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of pictures in a group of pictures, or 0 for intra_only</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torchaudio.io.CodecConfig.max_b_frames">
-<span class="sig-name descname"><span class="pre">max_b_frames</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.max_b_frames" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">max_b_frames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#torchaudio.io.CodecConfig.max_b_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>maximum number of B-frames between non-B-frames.</p>
 </dd></dl>
 

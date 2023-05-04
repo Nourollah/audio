@@ -213,7 +213,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">Nightly Build (2.1.0.dev20230430) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">Nightly Build (2.1.0a0+df5036a) &#x25BC</span></a>
     </div>
     
 
@@ -420,23 +420,23 @@
 <a class="reference external image-reference" href="../supported_features.html#properties"><img alt="This API supports the following properties: Autograd, TorchScript" class="shield-badge" src="../_images/842c6e7cf1798066d580c63886e1f8f16beadb856d19a33e879858e991748432.svg" /></a>
 <p>Mask will be applied from indices <code class="docutils literal notranslate"><span class="pre">[v_0,</span> <span class="pre">v_0</span> <span class="pre">+</span> <span class="pre">v)</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">v</span></code> is sampled from <code class="docutils literal notranslate"><span class="pre">uniform(0,</span> <span class="pre">max_v)</span></code> and
-<code class="docutils literal notranslate"><span class="pre">v_0</span></code> from <code class="docutils literal notranslate"><span class="pre">uniform(0,</span> <span class="pre">specgrams.size(axis)</span> <span class="pre">-</span> <span class="pre">v)</span></code>, with
+<code class="docutils literal notranslate"><span class="pre">v_0</span></code> from <code class="docutils literal notranslate"><span class="pre">uniform(0,</span> <span class="pre">specgram.size(axis)</span> <span class="pre">-</span> <span class="pre">v)</span></code>, with
 <code class="docutils literal notranslate"><span class="pre">max_v</span> <span class="pre">=</span> <span class="pre">mask_param</span></code> when <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">=</span> <span class="pre">1.0</span></code> and
-<code class="docutils literal notranslate"><span class="pre">max_v</span> <span class="pre">=</span> <span class="pre">min(mask_param,</span> <span class="pre">floor(specgrams.size(axis)</span> <span class="pre">*</span> <span class="pre">p))</span></code>
+<code class="docutils literal notranslate"><span class="pre">max_v</span> <span class="pre">=</span> <span class="pre">min(mask_param,</span> <span class="pre">floor(specgram.size(axis)</span> <span class="pre">*</span> <span class="pre">p))</span></code>
 otherwise.
 All examples will have the same mask interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>specgram</strong> (<em>Tensor</em>) – Real spectrogram <cite>(channel, freq, time)</cite></p></li>
+<li><p><strong>specgram</strong> (<em>Tensor</em>) – Real spectrograms <cite>(…, freq, time)</cite>, with at least 2 dimensions.</p></li>
 <li><p><strong>mask_param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of columns to be masked will be uniformly sampled from [0, mask_param]</p></li>
 <li><p><strong>mask_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to assign to the masked columns</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Axis to apply masking on (1 -&gt; frequency, 2 -&gt; time)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Axis to apply masking on, which should be the one of the last two dimensions.</p></li>
 <li><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – maximum proportion of columns that can be masked. (Default: 1.0)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Masked spectrogram of dimensions <cite>(channel, freq, time)</cite></p>
+<dd class="field-even"><p>Masked spectrograms with the same dimensions as input specgram Tensor</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Tensor</p>

@@ -213,7 +213,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">Nightly Build (2.1.0.dev20230430) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">Nightly Build (2.1.0a0+df5036a) &#x25BC</span></a>
     </div>
     
 
@@ -464,8 +464,8 @@ relative transfer function (RTF) matrix of the reference microphone.</p></li>
 <span class="nb">print</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">torchaudio</span><span class="o">.</span><span class="n">__version__</span></a><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2.1.0.dev20230430
-2.1.0.dev20230430
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2.1.0.dev20230504
+2.1.0a0+df5036a
 </pre></div>
 </div>
 </section>
@@ -515,10 +515,10 @@ International — CC BY 4.0)</p></li>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>  0%|          | 0.00/0.98M [00:00&lt;?, ?B/s]
-100%|##########| 0.98M/0.98M [00:00&lt;00:00, 201MB/s]
+100%|##########| 0.98M/0.98M [00:00&lt;00:00, 128MB/s]
 
   0%|          | 0.00/1.95M [00:00&lt;?, ?B/s]
-100%|##########| 1.95M/1.95M [00:00&lt;00:00, 218MB/s]
+100%|##########| 1.95M/1.95M [00:00&lt;00:00, 306MB/s]
 </pre></div>
 </div>
 </section>
@@ -641,7 +641,7 @@ using the following three metrics:</p>
 <span class="n">Audio</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">waveform_mix</span></a><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SAMPLE_RATE</span></a><span class="p">)</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_mvdr_tutorial_001.png" srcset="../_images/sphx_glr_mvdr_tutorial_001.png" alt="Spectrogram of Mixture Speech (dB)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SDR score: 4.140362181778027
+<img src="../_images/sphx_glr_mvdr_tutorial_001.png" srcset="../_images/sphx_glr_mvdr_tutorial_001.png" alt="Spectrogram of Mixture Speech (dB)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SDR score: 4.140362181778016
 Si-SNR score: 4.104058905536078
 PESQ score: 2.0084526538848877
 STOI score: 0.7724339398714715
@@ -764,10 +764,10 @@ We can then obtain the enhanced waveform by passing this output to the
 <span class="n">Audio</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">waveform_souden</span></a><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SAMPLE_RATE</span></a><span class="p">)</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_mvdr_tutorial_006.png" srcset="../_images/sphx_glr_mvdr_tutorial_006.png" alt="Enhanced Spectrogram by SoudenMVDR (dB)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SDR score: 17.94623444750869
-Si-SNR score: 12.215202612269067
+<img src="../_images/sphx_glr_mvdr_tutorial_006.png" srcset="../_images/sphx_glr_mvdr_tutorial_006.png" alt="Enhanced Spectrogram by SoudenMVDR (dB)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SDR score: 17.94623444750873
+Si-SNR score: 12.215202612266587
 PESQ score: 3.3447437286376953
-STOI score: 0.8712864479161908
+STOI score: 0.8712864479161745
 </pre></div>
 </div>
 <div class="output_subarea output_html rendered_html output_result">
@@ -826,10 +826,10 @@ We can then obtain the enhanced waveform by passing this output to the
 <span class="n">Audio</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">waveform_rtf_evd</span></a><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SAMPLE_RATE</span></a><span class="p">)</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_mvdr_tutorial_007.png" srcset="../_images/sphx_glr_mvdr_tutorial_007.png" alt="Enhanced Spectrogram by RTFMVDR and F.rtf_evd (dB)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SDR score: 11.8802106352825
-Si-SNR score: 10.714419996130161
+<img src="../_images/sphx_glr_mvdr_tutorial_007.png" srcset="../_images/sphx_glr_mvdr_tutorial_007.png" alt="Enhanced Spectrogram by RTFMVDR and F.rtf_evd (dB)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SDR score: 11.880210635280262
+Si-SNR score: 10.714419996128061
 PESQ score: 3.083890914916992
-STOI score: 0.8261544910053267
+STOI score: 0.8261544910053075
 </pre></div>
 </div>
 <div class="output_subarea output_html rendered_html output_result">
@@ -850,10 +850,10 @@ STOI score: 0.8261544910053267
 <span class="n">Audio</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">waveform_rtf_power</span></a><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SAMPLE_RATE</span></a><span class="p">)</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_mvdr_tutorial_008.png" srcset="../_images/sphx_glr_mvdr_tutorial_008.png" alt="Enhanced Spectrogram by RTFMVDR and F.rtf_power (dB)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SDR score: 15.424590276934618
-Si-SNR score: 13.035440892135128
+<img src="../_images/sphx_glr_mvdr_tutorial_008.png" srcset="../_images/sphx_glr_mvdr_tutorial_008.png" alt="Enhanced Spectrogram by RTFMVDR and F.rtf_power (dB)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SDR score: 15.424590276934119
+Si-SNR score: 13.035440892133451
 PESQ score: 3.487997531890869
-STOI score: 0.8798278461896585
+STOI score: 0.8798278461896808
 </pre></div>
 </div>
 <div class="output_subarea output_html rendered_html output_result">
@@ -865,7 +865,7 @@ STOI score: 0.8798278461896585
 
 </div>
 <br />
-<br /><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  2.138 seconds)</p>
+<br /><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  1.802 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-mvdr-tutorial-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/50de4231f2cfe5d85bac91915f27f92c/mvdr_tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">mvdr_tutorial.py</span></code></a></p>
