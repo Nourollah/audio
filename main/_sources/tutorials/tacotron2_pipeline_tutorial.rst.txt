@@ -120,8 +120,8 @@ encoding.
 
  .. code-block:: none
 
-    2.1.0.dev20230505
-    2.1.0.dev20230505
+    2.1.0.dev20230506
+    2.1.0.dev20230506
     cuda
 
 
@@ -301,7 +301,7 @@ fetched.
 
  .. code-block:: none
 
-      0%|          | 0.00/63.6M [00:00<?, ?B/s]      0%|          | 56.0k/63.6M [00:00<03:29, 318kB/s]      0%|          | 280k/63.6M [00:00<01:15, 879kB/s]       2%|1         | 1.16M/63.6M [00:00<00:23, 2.84MB/s]      6%|6         | 3.88M/63.6M [00:00<00:07, 7.93MB/s]     11%|#         | 6.94M/63.6M [00:00<00:05, 11.5MB/s]     16%|#5        | 10.0M/63.6M [00:01<00:04, 13.6MB/s]     21%|##        | 13.1M/63.6M [00:01<00:03, 15.0MB/s]     25%|##5       | 16.2M/63.6M [00:01<00:03, 16.0MB/s]     30%|###       | 19.3M/63.6M [00:01<00:02, 16.6MB/s]     35%|###5      | 22.4M/63.6M [00:01<00:02, 17.1MB/s]     40%|####      | 25.6M/63.6M [00:01<00:02, 17.5MB/s]     44%|####4     | 28.3M/63.6M [00:02<00:01, 19.6MB/s]     48%|####7     | 30.4M/63.6M [00:02<00:02, 17.3MB/s]     53%|#####2    | 33.6M/63.6M [00:02<00:01, 17.8MB/s]     57%|#####7    | 36.5M/63.6M [00:02<00:01, 20.5MB/s]     61%|######    | 38.7M/63.6M [00:02<00:01, 17.9MB/s]     66%|######5   | 41.8M/63.6M [00:02<00:01, 18.0MB/s]     71%|#######   | 44.9M/63.6M [00:02<00:00, 21.1MB/s]     74%|#######4  | 47.1M/63.6M [00:03<00:00, 18.4MB/s]     79%|#######9  | 50.3M/63.6M [00:03<00:00, 18.6MB/s]     83%|########3 | 53.0M/63.6M [00:03<00:00, 20.6MB/s]     87%|########7 | 55.5M/63.6M [00:03<00:00, 18.8MB/s]     91%|######### | 57.7M/63.6M [00:03<00:00, 19.8MB/s]     95%|#########5| 60.7M/63.6M [00:03<00:00, 19.3MB/s]     99%|#########8| 62.7M/63.6M [00:03<00:00, 19.8MB/s]    100%|##########| 63.6M/63.6M [00:03<00:00, 16.7MB/s]
+      0%|          | 0.00/63.6M [00:00<?, ?B/s]      0%|          | 48.0k/63.6M [00:00<04:04, 272kB/s]      0%|          | 232k/63.6M [00:00<01:31, 724kB/s]       1%|1         | 656k/63.6M [00:00<00:44, 1.49MB/s]      3%|3         | 2.14M/63.6M [00:00<00:14, 4.33MB/s]      8%|8         | 5.16M/63.6M [00:00<00:06, 9.06MB/s]     13%|#2        | 8.20M/63.6M [00:01<00:04, 12.0MB/s]     18%|#7        | 11.3M/63.6M [00:01<00:03, 13.9MB/s]     23%|##2       | 14.4M/63.6M [00:01<00:03, 15.2MB/s]     28%|##7       | 17.5M/63.6M [00:01<00:03, 16.1MB/s]     33%|###2      | 20.7M/63.6M [00:01<00:02, 16.8MB/s]     38%|###7      | 24.0M/63.6M [00:01<00:02, 17.5MB/s]     43%|####2     | 27.3M/63.6M [00:02<00:02, 18.1MB/s]     48%|####8     | 30.7M/63.6M [00:02<00:01, 18.5MB/s]     54%|#####3    | 34.2M/63.6M [00:02<00:01, 18.9MB/s]     59%|#####9    | 37.6M/63.6M [00:02<00:01, 19.2MB/s]     65%|######4   | 41.1M/63.6M [00:02<00:01, 19.5MB/s]     69%|######8   | 43.7M/63.6M [00:02<00:00, 21.0MB/s]     73%|#######3  | 46.6M/63.6M [00:03<00:00, 19.9MB/s]     79%|#######8  | 50.1M/63.6M [00:03<00:00, 23.4MB/s]     83%|########2 | 52.5M/63.6M [00:03<00:00, 20.4MB/s]     89%|########8 | 56.5M/63.6M [00:03<00:00, 21.3MB/s]     95%|#########5| 60.6M/63.6M [00:03<00:00, 22.0MB/s]    100%|##########| 63.6M/63.6M [00:03<00:00, 17.1MB/s]
     tensor([[54, 20, 65, 69, 11, 92, 44, 65, 38,  2, 11, 81, 40, 64, 79, 81, 11, 81,
              20, 11, 79, 77, 59, 37,  2]])
     tensor([25], dtype=torch.int32)
@@ -393,7 +393,7 @@ For the available bundles, and its usage, please refer to
  .. code-block:: none
 
     Downloading: "https://download.pytorch.org/torchaudio/models/tacotron2_english_phonemes_1500_epochs_wavernn_ljspeech.pth" to /root/.cache/torch/hub/checkpoints/tacotron2_english_phonemes_1500_epochs_wavernn_ljspeech.pth
-      0%|          | 0.00/107M [00:00<?, ?B/s]     38%|###8      | 40.9M/107M [00:00<00:00, 429MB/s]     76%|#######6  | 81.8M/107M [00:00<00:00, 428MB/s]    100%|##########| 107M/107M [00:00<00:00, 430MB/s] 
+      0%|          | 0.00/107M [00:00<?, ?B/s]     42%|####1     | 44.7M/107M [00:00<00:00, 469MB/s]     83%|########3 | 89.4M/107M [00:00<00:00, 391MB/s]    100%|##########| 107M/107M [00:00<00:00, 406MB/s] 
 
 
 
@@ -500,7 +500,7 @@ WaveRNN model from the same bundle.
  .. code-block:: none
 
     Downloading: "https://download.pytorch.org/torchaudio/models/wavernn_10k_epochs_8bits_ljspeech.pth" to /root/.cache/torch/hub/checkpoints/wavernn_10k_epochs_8bits_ljspeech.pth
-      0%|          | 0.00/16.7M [00:00<?, ?B/s]    100%|##########| 16.7M/16.7M [00:00<00:00, 313MB/s]
+      0%|          | 0.00/16.7M [00:00<?, ?B/s]    100%|##########| 16.7M/16.7M [00:00<00:00, 345MB/s]
 
 
 .. raw:: html
@@ -566,7 +566,7 @@ method and pass the spectrogram.
  .. code-block:: none
 
     Downloading: "https://download.pytorch.org/torchaudio/models/tacotron2_english_phonemes_1500_epochs_ljspeech.pth" to /root/.cache/torch/hub/checkpoints/tacotron2_english_phonemes_1500_epochs_ljspeech.pth
-      0%|          | 0.00/107M [00:00<?, ?B/s]     39%|###8      | 41.9M/107M [00:00<00:00, 439MB/s]     80%|#######9  | 85.7M/107M [00:00<00:00, 451MB/s]    100%|##########| 107M/107M [00:00<00:00, 450MB/s] 
+      0%|          | 0.00/107M [00:00<?, ?B/s]     38%|###7      | 40.7M/107M [00:00<00:00, 427MB/s]     77%|#######6  | 82.7M/107M [00:00<00:00, 435MB/s]    100%|##########| 107M/107M [00:00<00:00, 434MB/s] 
 
 
 .. raw:: html
@@ -638,7 +638,7 @@ module.
 
  .. code-block:: none
 
-    /work/ci_env/lib/python3.10/site-packages/torch/hub.py:286: UserWarning: You are about to download and run code from an untrusted repository. In a future release, this won't be allowed. To add the repository to your trusted list, change the command to {calling_fn}(..., trust_repo=False) and a command prompt will appear asking for an explicit confirmation of trust, or load(..., trust_repo=True), which will assume that the prompt is to be answered with 'yes'. You can also use load(..., trust_repo='check') which will only prompt for confirmation if the repo is not already trusted. This will eventually be the default behaviour
+    /work/ci_env/lib/python3.10/site-packages/torch/hub.py:293: UserWarning: You are about to download and run code from an untrusted repository. In a future release, this won't be allowed. To add the repository to your trusted list, change the command to {calling_fn}(..., trust_repo=False) and a command prompt will appear asking for an explicit confirmation of trust, or load(..., trust_repo=True), which will assume that the prompt is to be answered with 'yes'. You can also use load(..., trust_repo='check') which will only prompt for confirmation if the repo is not already trusted. This will eventually be the default behaviour
       warnings.warn(
     Downloading: "https://github.com/NVIDIA/DeepLearningExamples/zipball/torchhub" to /root/.cache/torch/hub/torchhub.zip
     /root/.cache/torch/hub/NVIDIA_DeepLearningExamples_torchhub/PyTorch/Classification/ConvNets/image_classification/models/common.py:13: UserWarning: pytorch_quantization module not found, quantization will not be available
@@ -664,7 +664,7 @@ module.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  17.744 seconds)
+   **Total running time of the script:** ( 2 minutes  17.266 seconds)
 
 
 .. _sphx_glr_download_tutorials_tacotron2_pipeline_tutorial.py:

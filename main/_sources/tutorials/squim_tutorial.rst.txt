@@ -97,8 +97,8 @@ through MOS using non-matching references.” Interspeech, 2022.
 
  .. code-block:: none
 
-    2.1.0.dev20230505
-    2.1.0.dev20230505
+    2.1.0.dev20230506
+    2.1.0.dev20230506
 
 
 
@@ -231,7 +231,7 @@ plot data, pystoi, pesq for computing reference metrics.
 
  .. code-block:: none
 
-      0%|          | 0.00/156k [00:00<?, ?B/s]    100%|##########| 156k/156k [00:00<00:00, 79.6MB/s]
+      0%|          | 0.00/156k [00:00<?, ?B/s]    100%|##########| 156k/156k [00:00<00:00, 97.9MB/s]
 
 
 
@@ -633,7 +633,7 @@ Get the pre-trained ``SquimObjective``\ model.
  .. code-block:: none
 
     Downloading: "https://download.pytorch.org/torchaudio/models/squim_objective_dns2020.pth" to /root/.cache/torch/hub/checkpoints/squim_objective_dns2020.pth
-      0%|          | 0.00/28.2M [00:00<?, ?B/s]    100%|##########| 28.2M/28.2M [00:00<00:00, 415MB/s]
+      0%|          | 0.00/28.2M [00:00<?, ?B/s]     41%|####      | 11.5M/28.2M [00:00<00:00, 121MB/s]     82%|########1 | 23.0M/28.2M [00:00<00:00, 80.0MB/s]    100%|##########| 28.2M/28.2M [00:00<00:00, 97.0MB/s]
 
 
 
@@ -764,7 +764,7 @@ Get the pre-trained ``SquimSubjective`` model.
  .. code-block:: none
 
     Downloading: "https://download.pytorch.org/torchaudio/models/squim_subjective_bvcc_daps.pth" to /root/.cache/torch/hub/checkpoints/squim_subjective_bvcc_daps.pth
-      0%|          | 0.00/360M [00:00<?, ?B/s]     12%|#1        | 41.6M/360M [00:00<00:00, 436MB/s]     24%|##3       | 85.3M/360M [00:00<00:00, 449MB/s]     36%|###5      | 129M/360M [00:00<00:00, 451MB/s]      48%|####7     | 172M/360M [00:00<00:00, 455MB/s]     60%|#####9    | 216M/360M [00:00<00:00, 455MB/s]     72%|#######1  | 259M/360M [00:00<00:00, 454MB/s]     84%|########4 | 303M/360M [00:00<00:00, 455MB/s]     96%|#########6| 347M/360M [00:00<00:00, 457MB/s]    100%|##########| 360M/360M [00:00<00:00, 454MB/s]
+      0%|          | 0.00/360M [00:00<?, ?B/s]      4%|3         | 13.9M/360M [00:00<00:02, 146MB/s]      8%|7         | 27.9M/360M [00:00<00:03, 115MB/s]     11%|#         | 39.2M/360M [00:00<00:03, 109MB/s]     14%|#3        | 49.8M/360M [00:00<00:03, 91.3MB/s]     18%|#7        | 63.7M/360M [00:00<00:02, 107MB/s]      21%|##        | 74.5M/360M [00:00<00:02, 105MB/s]     24%|##3       | 84.9M/360M [00:00<00:02, 96.6MB/s]     27%|##6       | 96.9M/360M [00:00<00:02, 104MB/s]      30%|##9       | 107M/360M [00:01<00:02, 103MB/s]      33%|###2      | 117M/360M [00:01<00:02, 97.5MB/s]     36%|###5      | 128M/360M [00:01<00:02, 103MB/s]      38%|###8      | 138M/360M [00:01<00:02, 102MB/s]     41%|####1     | 148M/360M [00:01<00:02, 91.7MB/s]     45%|####4     | 161M/360M [00:01<00:02, 103MB/s]      47%|####7     | 171M/360M [00:01<00:01, 103MB/s]     50%|#####     | 181M/360M [00:01<00:02, 91.2MB/s]     54%|#####4    | 195M/360M [00:01<00:01, 105MB/s]      57%|#####7    | 205M/360M [00:02<00:01, 104MB/s]     60%|#####9    | 216M/360M [00:02<00:01, 98.5MB/s]     63%|######2   | 227M/360M [00:02<00:01, 103MB/s]      66%|######5   | 237M/360M [00:02<00:01, 96.8MB/s]     68%|######8   | 246M/360M [00:02<00:01, 94.9MB/s]     72%|#######1  | 259M/360M [00:02<00:01, 105MB/s]      75%|#######4  | 269M/360M [00:02<00:00, 99.2MB/s]     77%|#######7  | 279M/360M [00:02<00:00, 92.4MB/s]     80%|#######9  | 288M/360M [00:03<00:00, 80.2MB/s]     83%|########3 | 301M/360M [00:03<00:00, 94.6MB/s]     86%|########6 | 312M/360M [00:03<00:00, 99.4MB/s]     91%|######### | 326M/360M [00:03<00:00, 115MB/s]      94%|#########3| 338M/360M [00:03<00:00, 110MB/s]     97%|#########6| 349M/360M [00:03<00:00, 99.3MB/s]    100%|##########| 360M/360M [00:03<00:00, 101MB/s] 
 
 
 
@@ -794,7 +794,7 @@ Load a non-matching reference (NMR)
 
  .. code-block:: none
 
-      0%|          | 0.00/441k [00:00<?, ?B/s]    100%|##########| 441k/441k [00:00<00:00, 141MB/s]
+      0%|          | 0.00/441k [00:00<?, ?B/s]    100%|##########| 441k/441k [00:00<00:00, 114MB/s]
 
 
 
@@ -831,13 +831,15 @@ Compute MOS metric for distorted speech with 20dB SNR
 Compute MOS metric for distorted speech with -5dB SNR
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 357-360
+.. GENERATED FROM PYTHON SOURCE LINES 357-362
 
 .. code-block:: default
 
 
     mos = subjective_model(WAVEFORM_DISTORTED[1:2, :], WAVEFORM_NMR)
     print(f"Estimated MOS for distorted speech at {snr_dbs[1]}dB is MOS: {mos[0]}")
+
+
 
 
 
@@ -851,10 +853,51 @@ Compute MOS metric for distorted speech with -5dB SNR
 
 
 
+.. GENERATED FROM PYTHON SOURCE LINES 363-390
+
+8. Comparison with ground truths and baselines
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Visualizing the estimated metrics by the ``SquimObjective`` and
+``SquimSubjective`` models can help users better understand how the
+models can be applicable in real scenario. The graph below shows scatter
+plots of three different systems: MOSA-Net [1], AMSA [2], and the
+``SquimObjective`` model, where y axis represents the estimated STOI,
+PESQ, and Si-SDR scores, and x axis represents the corresponding ground
+truth.
+
+.. image:: https://download.pytorch.org/torchaudio/tutorial-assets/objective_plot.png
+   :width: 500px
+   :align: center
+
+[1] Zezario, Ryandhimas E., Szu-Wei Fu, Fei Chen, Chiou-Shann Fuh,
+Hsin-Min Wang, and Yu Tsao. “Deep learning-based non-intrusive
+multi-objective speech assessment model with cross-domain features.”
+IEEE/ACM Transactions on Audio, Speech, and Language Processing 31
+(2022): 54-70.
+
+[2] Dong, Xuan, and Donald S. Williamson. “An attention enhanced
+multi-task model for objective speech assessment in real-world
+environments.” In ICASSP 2020-2020 IEEE International Conference on
+Acoustics, Speech and Signal Processing (ICASSP), pp. 911-915. IEEE,
+2020.
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 393-401
+
+The graph below shows scatter plot of the ``SquimSubjective`` model,
+where y axis represents the estimated MOS metric score, and x axis
+represents the corresponding ground truth.
+
+.. image:: https://download.pytorch.org/torchaudio/tutorial-assets/subjective_plot.png
+   :width: 500px
+   :align: center
+
+
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  6.627 seconds)
+   **Total running time of the script:** ( 0 minutes  9.861 seconds)
 
 
 .. _sphx_glr_download_tutorials_squim_tutorial.py:
