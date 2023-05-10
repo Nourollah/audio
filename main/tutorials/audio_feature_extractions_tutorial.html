@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Audio Feature Extractions &mdash; Torchaudio 2.1.0.dev20230508 documentation</title>
+  <title>Audio Feature Extractions &mdash; Torchaudio 2.1.0.dev20230510 documentation</title>
   
 
   
@@ -213,7 +213,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">2.1.0.dev20230508 &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">2.1.0.dev20230510 &#x25BC</span></a>
     </div>
     
 
@@ -262,6 +262,7 @@
 <li class="toctree-l1"><a class="reference internal" href="streamwriter_basic_tutorial.html">StreamWriter Basic Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="streamwriter_advanced.html">StreamWriter Advanced Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hw_acceleration_tutorial.html">GPU video decoder/encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="effector_tutorial.html">AudioEffector Usages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="audio_resampling_tutorial.html">Audio Resampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="audio_data_augmentation_tutorial.html">Audio Data Augmentation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Audio Feature Extractions</a></li>
@@ -455,8 +456,8 @@ They can be serialized using TorchScript.</p>
 <span class="nb">print</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">torchaudio</span><span class="o">.</span><span class="n">__version__</span></a><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2.1.0.dev20230508
-2.1.0.dev20230508
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>2.1.0.dev20230510
+2.1.0.dev20230510
 </pre></div>
 </div>
 <section id="preparation">
@@ -678,7 +679,7 @@ this functionality.</p>
 <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">melspec</span></a> <span class="o">=</span> <span class="n">mel_spectrogram</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SPEECH_WAVEFORM</span></a><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/work/torchaudio/transforms/_transforms.py:611: UserWarning: Argument &#39;onesided&#39; has been deprecated and has no influence on the behavior of this module.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/work/torchaudio/transforms/_transforms.py:580: UserWarning: Argument &#39;onesided&#39; has been deprecated and has no influence on the behavior of this module.
   warnings.warn(
 </pre></div>
 </div>
@@ -866,7 +867,7 @@ Processing (ICASSP), Florence, 2014, pp. 2494-2498, doi:
 <span class="n">plot_kaldi_pitch</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SPEECH_WAVEFORM</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SAMPLE_RATE</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pitch</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nfcc</span></a><span class="p">)</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_audio_feature_extractions_tutorial_012.png" srcset="../_images/sphx_glr_audio_feature_extractions_tutorial_012.png" alt="Kaldi Pitch Feature" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  10.020 seconds)</p>
+<img src="../_images/sphx_glr_audio_feature_extractions_tutorial_012.png" srcset="../_images/sphx_glr_audio_feature_extractions_tutorial_012.png" alt="Kaldi Pitch Feature" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  9.971 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-audio-feature-extractions-tutorial-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/0face80178ed0d1cefd2a173a7262afb/audio_feature_extractions_tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">audio_feature_extractions_tutorial.py</span></code></a></p>

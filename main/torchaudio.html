@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>torchaudio &mdash; Torchaudio 2.1.0.dev20230508 documentation</title>
+  <title>torchaudio &mdash; Torchaudio 2.1.0.dev20230510 documentation</title>
   
 
   
@@ -213,7 +213,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../versions.html"><span style="font-size:110%">2.1.0.dev20230508 &#x25BC</span></a>
+      <a href="../versions.html"><span style="font-size:110%">2.1.0.dev20230510 &#x25BC</span></a>
     </div>
     
 
@@ -262,6 +262,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/streamwriter_basic_tutorial.html">StreamWriter Basic Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/streamwriter_advanced.html">StreamWriter Advanced Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hw_acceleration_tutorial.html">GPU video decoder/encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/effector_tutorial.html">AudioEffector Usages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/audio_resampling_tutorial.html">Audio Resampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/audio_data_augmentation_tutorial.html">Audio Data Augmentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/audio_feature_extractions_tutorial.html">Audio Feature Extractions</a></li>
@@ -410,30 +411,81 @@
               
   <section id="torchaudio">
 <h1>torchaudio<a class="headerlink" href="#torchaudio" title="Permalink to this heading">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Release 2.1 will revise <code class="docutils literal notranslate"><span class="pre">torchaudio.info</span></code>, <code class="docutils literal notranslate"><span class="pre">torchaudio.load</span></code>, and <code class="docutils literal notranslate"><span class="pre">torchaudio.save</span></code> to allow for backend selection via function parameter rather than <code class="docutils literal notranslate"><span class="pre">torchaudio.set_audio_backend</span></code>, with FFmpeg being the default backend.
-The new API can be enabled in the current release by setting environment variable <code class="docutils literal notranslate"><span class="pre">TORCHAUDIO_USE_BACKEND_DISPATCHER=1</span></code>.
-See <a class="reference internal" href="#future-api"><span class="std std-ref">Future API</span></a> for details on the new API.</p>
-</div>
+<section id="i-o">
+<h2>I/O<a class="headerlink" href="#i-o" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">torchaudio</span></code> top-level module provides the following functions that make
+it easy to handle audio data.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#torchaudio.info" title="torchaudio.info"><code class="xref py py-func docutils literal notranslate"><span class="pre">torchaudio.info()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#torchaudio.load" title="torchaudio.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">torchaudio.load()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#torchaudio.save" title="torchaudio.save"><code class="xref py py-func docutils literal notranslate"><span class="pre">torchaudio.save()</span></code></a></p></li>
+</ul>
+<p>Under the hood, these functions are implemented using various decoding/encoding
+libraries. There are currently three variants.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FFmpeg</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libsox</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SoundFile</span></code></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">libsox</span></code> backend is the first backend implemented in TorchAudio, and it
+works on Linux and macOS.
+<code class="docutils literal notranslate"><span class="pre">SoundFile</span></code> backend was added to extend audio I/O support to Windows.
+It also works on Linux and macOS.
+<code class="docutils literal notranslate"><span class="pre">FFmpeg</span></code> backend is the latest addition and it supports wide range of audio, video
+formats and protocols.
+It works on Linux, macOS and Windows.</p>
+<section id="introduction-of-dispatcher">
+<span id="dispatcher-migration"></span><h3>Introduction of Dispatcher<a class="headerlink" href="#introduction-of-dispatcher" title="Permalink to this heading">¶</a></h3>
+<p>Conventionally, torchaudio has had its IO backend set globally at runtime based on availability.
+However, this approach does not allow applications to use different
+backends, and it is not well-suited for large codebases.</p>
+<p>For these reasons, we are introducing a dispatcher, a new mechanism to allow users to
+choose a backend for each function call, and migrating the I/O functions.
+This incurs multiple changes, some of which involve backward-compatibility-breaking changes, and require
+users to change their function call.</p>
+<p>The (planned) changes are as follows. For up-to-date information,
+please refer to <a class="reference external" href="https://github.com/pytorch/audio/issues/2950">https://github.com/pytorch/audio/issues/2950</a></p>
+<ul class="simple">
+<li><p>In 2.0, audio I/O backend dispatcher was introduced.
+Users can opt-in to using dispatcher by setting the environment variable
+<code class="docutils literal notranslate"><span class="pre">TORCHAUDIO_USE_BACKEND_DISPATCHER=1</span></code></p></li>
+<li><p>In 2.1, the disptcher becomes the default mechanism for I/O.
+Those who need to keep using the previous mechanism (global backend) can do
+so by setting <code class="docutils literal notranslate"><span class="pre">TORCHAUDIO_USE_BACKEND_DISPATCHER=0</span></code>.</p></li>
+</ul>
+<p>Furthermore, we are removing file-like object support from libsox backend, as this
+is better supported by FFmpeg backend and makes the build process simpler.
+Therefore, beginning with 2.1, FFmpeg and Soundfile are the sole backends that support file-like objects.</p>
+<p>The changes in 2.1 will mark the <a class="reference internal" href="#backend-utils"><span class="std std-ref">backend utilities</span></a> deprecated.</p>
+</section>
+</section>
 <section id="current-api">
 <h2>Current API<a class="headerlink" href="#current-api" title="Permalink to this heading">¶</a></h2>
 <section id="i-o-functionalities">
 <h3>I/O functionalities<a class="headerlink" href="#i-o-functionalities" title="Permalink to this heading">¶</a></h3>
 <p>Audio I/O functions are implemented in <a class="reference internal" href="backend.html#backend"><span class="std std-ref">torchaudio.backend</span></a> module, but for the ease of use, the following functions are made available on <code class="xref py py-mod docutils literal notranslate"><span class="pre">torchaudio</span></code> module. There are different backends available and you can switch backends with <code class="xref py py-func docutils literal notranslate"><span class="pre">set_audio_backend()</span></code>.</p>
 <p>Please refer to <a class="reference internal" href="backend.html#backend"><span class="std std-ref">torchaudio.backend</span></a> for the detail, and the <a class="reference internal" href="tutorials/audio_io_tutorial.html"><span class="doc">Audio I/O tutorial</span></a> for the usage.</p>
+</section>
+<section id="torchaudio-info">
+<h3>torchaudio.info<a class="headerlink" href="#torchaudio-info" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="torchaudio.info">
 <span class="sig-prename descclassname"><span class="pre">torchaudio.</span></span><span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchaudio.info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch meta data of an audio file. Refer to <a class="reference internal" href="backend.html#backend"><span class="std std-ref">torchaudio.backend</span></a> for the detail.</p>
 </dd></dl>
 
+</section>
+<section id="torchaudio-load">
+<h3>torchaudio.load<a class="headerlink" href="#torchaudio-load" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="torchaudio.load">
 <span class="sig-prename descclassname"><span class="pre">torchaudio.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchaudio.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load audio file into torch.Tensor object. Refer to <a class="reference internal" href="backend.html#backend"><span class="std std-ref">torchaudio.backend</span></a> for the detail.</p>
 </dd></dl>
 
+</section>
+<section id="torchaudio-save">
+<h3>torchaudio.save<a class="headerlink" href="#torchaudio-save" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="torchaudio.save">
 <span class="sig-prename descclassname"><span class="pre">torchaudio.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src:</span> <span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchaudio.save" title="Permalink to this definition">¶</a></dt>
@@ -442,7 +494,9 @@ See <a class="reference internal" href="#future-api"><span class="std std-ref">F
 
 </section>
 <section id="backend-utilities">
-<h3>Backend Utilities<a class="headerlink" href="#backend-utilities" title="Permalink to this heading">¶</a></h3>
+<span id="backend-utils"></span><h3>Backend Utilities<a class="headerlink" href="#backend-utilities" title="Permalink to this heading">¶</a></h3>
+<p>The following functions are effective only when backend dispatcher is disabled.
+They are effectively deprecated.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="torchaudio.list_audio_backends">
 <span class="sig-prename descclassname"><span class="pre">torchaudio.</span></span><span class="sig-name descname"><span class="pre">list_audio_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/torchaudio/backend/utils.html#list_audio_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchaudio.list_audio_backends" title="Permalink to this definition">¶</a></dt>
@@ -488,11 +542,24 @@ of the system. If <code class="docutils literal notranslate"><span class="pre">N
 </section>
 <section id="future-api">
 <span id="id1"></span><h2>Future API<a class="headerlink" href="#future-api" title="Permalink to this heading">¶</a></h2>
+<section id="dispatcher">
+<h3>Dispatcher<a class="headerlink" href="#dispatcher" title="Permalink to this heading">¶</a></h3>
+<p>The dispatcher tries to use the I/O backend in the following order of precedence</p>
+<ol class="arabic simple">
+<li><p>FFmpeg</p></li>
+<li><p>libsox</p></li>
+<li><p>soundfile</p></li>
+</ol>
+<p>One can pass <code class="docutils literal notranslate"><span class="pre">backend</span></code> argument to I/O functions to override this.</p>
+<p>See <a class="reference internal" href="#future-api"><span class="std std-ref">Future API</span></a> for details on the new API.</p>
 <p>In the next release, each of <code class="docutils literal notranslate"><span class="pre">torchaudio.info</span></code>, <code class="docutils literal notranslate"><span class="pre">torchaudio.load</span></code>, and <code class="docutils literal notranslate"><span class="pre">torchaudio.save</span></code> will allow for selecting a backend to use via parameter <code class="docutils literal notranslate"><span class="pre">backend</span></code>.
 The functions will support using any of FFmpeg, SoX, and SoundFile, provided that the corresponding library is installed.
 If a backend is not explicitly chosen, the functions will select a backend to use given order of precedence (FFmpeg, SoX, SoundFile) and library availability.</p>
 <p>Note that only FFmpeg and SoundFile will support file-like objects.</p>
 <p>These functions can be enabled in the current release by setting environment variable <code class="docutils literal notranslate"><span class="pre">TORCHAUDIO_USE_BACKEND_DISPATCHER=1</span></code>.</p>
+</section>
+<section id="id2">
+<h3>torchaudio.info<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">torchaudio.</span></span><span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.BinaryIO" title="(in Python v3.11)"><span class="pre">BinaryIO</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.11)"><span class="pre">PathLike</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4096</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="backend.html#torchaudio.backend.common.AudioMetaData" title="torchaudio.backend.common.AudioMetaData"><span class="pre">AudioMetaData</span></a></span></span></dt>
@@ -533,6 +600,9 @@ Otherwise, must be one of [“ffmpeg”, “sox”, “soundfile”], with the c
 </dl>
 </dd></dl>
 
+</section>
+<section id="id3">
+<h3>torchaudio.load<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">torchaudio.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.BinaryIO" title="(in Python v3.11)"><span class="pre">BinaryIO</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.11)"><span class="pre">PathLike</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4096</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span></dt>
@@ -615,6 +685,9 @@ integer type, else <code class="docutils literal notranslate"><span class="pre">
 </dl>
 </dd></dl>
 
+</section>
+<section id="id4">
+<h3>torchaudio.save<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">torchaudio.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.BinaryIO" title="(in Python v3.11)"><span class="pre">BinaryIO</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.11)"><span class="pre">PathLike</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bits_per_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4096</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
@@ -710,6 +783,7 @@ the input Tensor.</p>
 
 </section>
 </section>
+</section>
 
 
              </article>
@@ -757,12 +831,25 @@ the input Tensor.</p>
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
 <li><a class="reference internal" href="#">torchaudio</a><ul>
+<li><a class="reference internal" href="#i-o">I/O</a><ul>
+<li><a class="reference internal" href="#introduction-of-dispatcher">Introduction of Dispatcher</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#current-api">Current API</a><ul>
 <li><a class="reference internal" href="#i-o-functionalities">I/O functionalities</a></li>
+<li><a class="reference internal" href="#torchaudio-info">torchaudio.info</a></li>
+<li><a class="reference internal" href="#torchaudio-load">torchaudio.load</a></li>
+<li><a class="reference internal" href="#torchaudio-save">torchaudio.save</a></li>
 <li><a class="reference internal" href="#backend-utilities">Backend Utilities</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#future-api">Future API</a></li>
+<li><a class="reference internal" href="#future-api">Future API</a><ul>
+<li><a class="reference internal" href="#dispatcher">Dispatcher</a></li>
+<li><a class="reference internal" href="#id2">torchaudio.info</a></li>
+<li><a class="reference internal" href="#id3">torchaudio.load</a></li>
+<li><a class="reference internal" href="#id4">torchaudio.save</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
