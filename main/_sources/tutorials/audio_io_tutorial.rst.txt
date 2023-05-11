@@ -51,8 +51,8 @@ load them into PyTorch Tensors and save PyTorch Tensors.
 
  .. code-block:: none
 
-    2.1.0.dev20230510
-    2.1.0.dev20230510
+    2.1.0.dev20230511
+    2.1.0.dev20230511
 
 
 
@@ -113,8 +113,8 @@ First, we import the modules and download the audio assets we use in this tutori
 
  .. code-block:: none
 
-      0%|          | 0.00/7.99k [00:00<?, ?B/s]    100%|##########| 7.99k/7.99k [00:00<00:00, 7.33MB/s]
-      0%|          | 0.00/53.2k [00:00<?, ?B/s]    100%|##########| 53.2k/53.2k [00:00<00:00, 61.9MB/s]
+      0%|          | 0.00/7.99k [00:00<?, ?B/s]    100%|##########| 7.99k/7.99k [00:00<00:00, 7.40MB/s]
+      0%|          | 0.00/53.2k [00:00<?, ?B/s]    100%|##########| 53.2k/53.2k [00:00<00:00, 30.0MB/s]
 
 
 
@@ -209,7 +209,7 @@ Where
 
  .. code-block:: none
 
-    AudioMetaData(sample_rate=8000, num_frames=0, num_channels=1, bits_per_sample=0, encoding=GSM)
+    AudioMetaData(sample_rate=8000, num_frames=39680, num_channels=1, bits_per_sample=0, encoding=GSM)
 
 
 
@@ -240,8 +240,6 @@ Querying file-like object
 
  .. code-block:: none
 
-    /work/torchaudio/backend/sox_io_backend.py:106: UserWarning: File-like object support in sox_io backend is deprecated, and will be removed in v2.1. See https://github.com/pytorch/audio/issues/2950 for the detail.Please migrate to the new dispatcher, or use soundfile backend.
-      warnings.warn(_deprecation_message)
     AudioMetaData(sample_rate=44100, num_frames=109368, num_channels=2, bits_per_sample=16, encoding=PCM_S)
 
 
@@ -441,13 +439,6 @@ The following examples illustrate this.
    :class: sphx-glr-single-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    /work/torchaudio/backend/sox_io_backend.py:235: UserWarning: File-like object support in sox_io backend is deprecated, and will be removed in v2.1. See https://github.com/pytorch/audio/issues/2950 for the detail.Please migrate to the new dispatcher, or use soundfile backend.
-      warnings.warn(_deprecation_message)
-
 
 
 
@@ -477,9 +468,7 @@ The following examples illustrate this.
 
  .. code-block:: none
 
-      0%|          | 0.00/110k [00:00<?, ?B/s]    100%|##########| 110k/110k [00:00<00:00, 71.2MB/s]
-    /work/torchaudio/backend/sox_io_backend.py:235: UserWarning: File-like object support in sox_io backend is deprecated, and will be removed in v2.1. See https://github.com/pytorch/audio/issues/2950 for the detail.Please migrate to the new dispatcher, or use soundfile backend.
-      warnings.warn(_deprecation_message)
+      0%|          | 0.00/110k [00:00<?, ?B/s]    100%|##########| 110k/110k [00:00<00:00, 28.6MB/s]
 
 
 
@@ -506,13 +495,6 @@ The following examples illustrate this.
    :srcset: /tutorials/images/sphx_glr_audio_io_tutorial_005.png
    :class: sphx-glr-single-img
 
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    /work/torchaudio/backend/sox_io_backend.py:235: UserWarning: File-like object support in sox_io backend is deprecated, and will be removed in v2.1. See https://github.com/pytorch/audio/issues/2950 for the detail.Please migrate to the new dispatcher, or use soundfile backend.
-      warnings.warn(_deprecation_message)
 
 
 
@@ -576,11 +558,9 @@ The following example illustrates this.
  .. code-block:: none
 
     Fetching all the data...
-    /work/torchaudio/backend/sox_io_backend.py:235: UserWarning: File-like object support in sox_io backend is deprecated, and will be removed in v2.1. See https://github.com/pytorch/audio/issues/2950 for the detail.Please migrate to the new dispatcher, or use soundfile backend.
-      warnings.warn(_deprecation_message)
      - Fetched 108844 bytes
     Fetching until the requested frames are available...
-     - Fetched 65580 bytes
+     - Fetched 108844 bytes
     Checking the resulting waveform ... matched!
 
 
@@ -672,10 +652,10 @@ the provided data fit
  .. code-block:: none
 
     ----------
-    Source: /tmp/tmph9fw3e1l/save_example_default.wav
+    Source: /tmp/tmpgbyyc9j1/save_example_default.wav
     ----------
-     - File size: 217658 bytes
-     - AudioMetaData(sample_rate=16000, num_frames=54400, num_channels=1, bits_per_sample=32, encoding=PCM_F)
+     - File size: 108878 bytes
+     - AudioMetaData(sample_rate=16000, num_frames=54400, num_channels=1, bits_per_sample=16, encoding=PCM_S)
 
 
 
@@ -705,9 +685,9 @@ The resulting file occupies half the storage but loses precision
  .. code-block:: none
 
     ----------
-    Source: /tmp/tmpof_1hiw1/save_example_PCM_S16.wav
+    Source: /tmp/tmp6tu910xj/save_example_PCM_S16.wav
     ----------
-     - File size: 108844 bytes
+     - File size: 108878 bytes
      - AudioMetaData(sample_rate=16000, num_frames=54400, num_channels=1, bits_per_sample=16, encoding=PCM_S)
 
 
@@ -761,10 +741,10 @@ To name a few:
  .. code-block:: none
 
     ----------
-    Source: /tmp/tmpgovuu7g5/save_example.flac
+    Source: /tmp/tmp7383mjzv/save_example.flac
     ----------
-     - File size: 37141 bytes
-     - AudioMetaData(sample_rate=8000, num_frames=27200, num_channels=1, bits_per_sample=24, encoding=FLAC)
+     - File size: 45264 bytes
+     - AudioMetaData(sample_rate=8000, num_frames=27200, num_channels=1, bits_per_sample=16, encoding=FLAC)
 
 
 
@@ -802,9 +782,7 @@ required.
 
  .. code-block:: none
 
-    /work/torchaudio/backend/sox_io_backend.py:416: UserWarning: File-like object support in sox_io backend is deprecated, and will be removed in v2.1. See https://github.com/pytorch/audio/issues/2950 for the detail.Please migrate to the new dispatcher, or use soundfile backend.
-      warnings.warn(_deprecation_message)
-    b'RIFF2R\x03\x00WAVEfmt '
+    b'RIFFF\xa9\x01\x00WAVEfmt '
 
 
 
@@ -812,7 +790,7 @@ required.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.845 seconds)
+   **Total running time of the script:** ( 0 minutes  2.007 seconds)
 
 
 .. _sphx_glr_download_tutorials_audio_io_tutorial.py:
