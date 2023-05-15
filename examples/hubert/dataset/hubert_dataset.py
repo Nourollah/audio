@@ -76,7 +76,7 @@ class BucketizeBatchSampler(BatchSampler):
             ), "The  ``max_token_count`` must be greater than or equal to the maximum value of ``lengths``."
         # Filter out samples which are outside the bounds of [min_len, max_len]
         filtered_length_idx = [(length, i) for i, length in enumerate(lengths) if min_len <= length <= max_len]
-        if len(filtered_length_idx) == 0:
+        if not filtered_length_idx:
             raise AssertionError("``lengths`` cannot be empty after filtering.")
         sorted_filtered_length_idx = sorted(filtered_length_idx, key=lambda x: x[0])
         self.lengths = [e[0] for e in sorted_filtered_length_idx]
@@ -115,7 +115,7 @@ class BucketizeBatchSampler(BatchSampler):
                 buckets[bucket_id] = [i]
         for k in buckets:
             buckets[k] = torch.as_tensor(buckets[k], dtype=torch.int)
-        buckets = {k: v for k, v in sorted(buckets.items())}
+        buckets = dict(sorted(buckets.items()))
         return buckets
 
     def _update_iter_list(self) -> None:
@@ -403,9 +403,9 @@ class CollateFnHubert:
                 The Tensor of audio lengths with dimension `(batch,)`.
         """
         if self.pad:
-            num_frames = max([sample[0].shape[1] for sample in batch])
+            num_frames = max(sample[0].shape[1] for sample in batch)
         else:
-            num_frames = min([sample[0].shape[1] for sample in batch])
+            num_frames = min(sample[0].shape[1] for sample in batch)
         waveforms, labels, lengths = [], [], []
         for sample in batch:
             waveform, label, length = sample
@@ -420,10 +420,11 @@ class CollateFnHubert:
         # make sure the shapes are the same if not apply zero-padding
         if not self.pad:
             assert all(
-                [waveform.shape[0] == waveforms[0].shape[0] for waveform in waveforms]
+                waveform.shape[0] == waveforms[0].shape[0]
+                for waveform in waveforms
             ), "The dimensions of the waveforms should be identical in the same batch."
             assert all(
-                [label.shape[0] == labels[0].shape[0] for label in labels]
+                label.shape[0] == labels[0].shape[0] for label in labels
             ), "The dimensions of the labels should be identical in the same batch."
         waveforms = torch.nn.utils.rnn.pad_sequence(waveforms, batch_first=True)
         labels = torch.nn.utils.rnn.pad_sequence(labels, batch_first=True)
@@ -447,7 +448,7 @@ def _get_lengths_librispeech(files: List[str], path: str, ext_audio: str) -> Lis
     lengths = []
     for file_path in files:
         speaker_id, chapter_id, utterance_id = file_path.split("-")
-        fileid_audio = speaker_id + "-" + chapter_id + "-" + utterance_id
+        fileid_audio = f"{speaker_id}-{chapter_id}-{utterance_id}"
         file_audio = fileid_audio + ext_audio
         file_audio = os.path.join(path, speaker_id, chapter_id, file_audio)
         length = torchaudio.info(file_audio).num_frames
@@ -480,7 +481,7 @@ class CollateFnLibriLightLimited:
         for sample in batch:
             waveform, transcript = sample[0], sample[2]
             # add one "|" symbol after the end of transcription as the word termination
-            transcript = transcript + "|"
+            transcript = f"{transcript}|"
             label = torch.tensor([label2id[e] for e in transcript.replace(" ", "|").upper()])
             audio_length = waveform.size(1)
             label_length = label.size(0)
@@ -491,7 +492,7 @@ class CollateFnLibriLightLimited:
 
         data = torch.zeros(len(batch), audio_size)
         for i in range(len(waveforms)):
-            data[i][0 : waveforms[i].shape[1]] = waveforms[i]
+            data[i][:waveforms[i].shape[1]] = waveforms[i]
         audio_lengths = torch.tensor(audio_lengths)
         label_lengths = torch.tensor(label_lengths)
         labels = torch.nn.utils.rnn.pad_sequence(labels, batch_first=True, padding_value=-1)

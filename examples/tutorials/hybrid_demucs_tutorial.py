@@ -146,11 +146,7 @@ def separate_sources(
             When `device` is different from `mix.device`, only local computations will
             be on `device`, while the entire tracks will be stored on `mix.device`.
     """
-    if device is None:
-        device = mix.device
-    else:
-        device = torch.device(device)
-
+    device = mix.device if device is None else torch.device(device)
     batch, channels, length = mix.shape
 
     chunk_len = int(sample_rate * segment * (1 + overlap))

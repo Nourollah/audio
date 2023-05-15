@@ -10,7 +10,7 @@ def convert_args(**kwargs):
             key = "sample_frequency"
         key = "--" + key.replace("_", "-")
         value = str(value).lower() if value in [True, False] else str(value)
-        args.append("%s=%s" % (key, value))
+        args.append(f"{key}={value}")
     return args
 
 

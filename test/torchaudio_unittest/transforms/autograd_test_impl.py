@@ -356,10 +356,7 @@ class AutogradTestMixin(TestBaseMixin):
 
         waveform = torch.rand(*leading_dims, L)
         noise = torch.rand(*leading_dims, L)
-        if use_lengths:
-            lengths = torch.rand(*leading_dims)
-        else:
-            lengths = None
+        lengths = torch.rand(*leading_dims) if use_lengths else None
         snr = torch.rand(*leading_dims)
 
         add_noise = T.AddNoise()

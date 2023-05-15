@@ -90,7 +90,7 @@ class LIBRITTS(Dataset):
         download: bool = False,
     ) -> None:
 
-        if url in [
+        if url in {
             "dev-clean",
             "dev-other",
             "test-clean",
@@ -98,12 +98,11 @@ class LIBRITTS(Dataset):
             "train-clean-100",
             "train-clean-360",
             "train-other-500",
-        ]:
+        }:
 
-            ext_archive = ".tar.gz"
             base_url = "http://www.openslr.org/resources/60/"
 
-            url = os.path.join(base_url, url + ext_archive)
+            url = os.path.join(base_url, f"{url}.tar.gz")
 
         # Get string representation of 'root' in case Path object is passed
         root = os.fspath(root)
@@ -122,14 +121,15 @@ class LIBRITTS(Dataset):
                     checksum = _CHECKSUMS.get(url, None)
                     download_url_to_file(url, archive, hash_prefix=checksum)
                 _extract_tar(archive)
-        else:
-            if not os.path.exists(self._path):
-                raise RuntimeError(
-                    f"The path {self._path} doesn't exist. "
-                    "Please check the ``root`` path or set `download=True` to download it"
-                )
+        elif not os.path.exists(self._path):
+            raise RuntimeError(
+                f"The path {self._path} doesn't exist. "
+                "Please check the ``root`` path or set `download=True` to download it"
+            )
 
-        self._walker = sorted(str(p.stem) for p in Path(self._path).glob("*/*/*" + self._ext_audio))
+        self._walker = sorted(
+            str(p.stem) for p in Path(self._path).glob(f"*/*/*{self._ext_audio}")
+        )
 
     def __getitem__(self, n: int) -> Tuple[Tensor, int, str, str, int, int, str]:
         """Load the n-th sample from the dataset.

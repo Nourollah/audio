@@ -31,7 +31,7 @@ def get_mock_dataset(root_dir):
     seed = 0
 
     for speaker in range(225, 230):
-        speaker_id = "p" + str(speaker)
+        speaker_id = f"p{str(speaker)}"
         audio_dir = os.path.join(dataset_dir, "wav48_silence_trimmed", speaker_id)
         os.makedirs(audio_dir, exist_ok=True)
 
@@ -40,12 +40,12 @@ def get_mock_dataset(root_dir):
 
         for utterance_id in range(1, 11):
             filename = f"{speaker_id}_{utterance_id:03d}_mic2"
-            audio_file_path = os.path.join(audio_dir, filename + ".wav")
+            audio_file_path = os.path.join(audio_dir, f"{filename}.wav")
 
             data = get_whitenoise(sample_rate=sample_rate, duration=0.01, n_channels=1, dtype="float32", seed=seed)
             save_wav(audio_file_path, data, sample_rate)
 
-            txt_file_path = os.path.join(file_dir, filename[:-5] + ".txt")
+            txt_file_path = os.path.join(file_dir, f"{filename[:-5]}.txt")
             transcript = _TRANSCRIPT[utterance_id - 1]
             with open(txt_file_path, "w") as f:
                 f.write(transcript)

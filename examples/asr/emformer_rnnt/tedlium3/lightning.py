@@ -31,7 +31,7 @@ class CustomDataset(torch.utils.data.Dataset):
         ]
         idx_target_lengths = [(idx, length) for idx, length in idx_target_lengths if length != -1]
 
-        assert len(idx_target_lengths) > 0
+        assert idx_target_lengths
 
         idx_target_lengths = sorted(idx_target_lengths, key=lambda x: x[1])
 
@@ -41,7 +41,7 @@ class CustomDataset(torch.utils.data.Dataset):
 
     def _target_length(self, fileid, line):
         transcript_path = os.path.join(self.base_dataset._path, "stm", fileid)
-        with open(transcript_path + ".stm") as f:
+        with open(f"{transcript_path}.stm") as f:
             transcript = f.readlines()[line]
             _, _, _, start_time, end_time, _, transcript = transcript.split(" ", 6)
             if transcript.lower() == "ignore_time_segment_in_scoring\n":
@@ -203,31 +203,31 @@ class TEDLIUM3RNNTModule(LightningModule):
 
     def train_dataloader(self):
         dataset = CustomDataset(torchaudio.datasets.TEDLIUM(self.tedlium_path, release="release3", subset="train"), 100)
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_size=None,
             collate_fn=self._train_collate_fn,
             num_workers=10,
             shuffle=True,
         )
-        return dataloader
 
     def val_dataloader(self):
         dataset = CustomDataset(torchaudio.datasets.TEDLIUM(self.tedlium_path, release="release3", subset="dev"), 100)
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_size=None,
             collate_fn=self._valid_collate_fn,
             num_workers=10,
         )
-        return dataloader
 
     def test_dataloader(self):
         dataset = EvalDataset(torchaudio.datasets.TEDLIUM(self.tedlium_path, release="release3", subset="test"))
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, collate_fn=self._test_collate_fn)
-        return dataloader
+        return torch.utils.data.DataLoader(
+            dataset, batch_size=1, collate_fn=self._test_collate_fn
+        )
 
     def dev_dataloader(self):
         dataset = EvalDataset(torchaudio.datasets.TEDLIUM(self.tedlium_path, release="release3", subset="dev"))
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, collate_fn=self._test_collate_fn)
-        return dataloader
+        return torch.utils.data.DataLoader(
+            dataset, batch_size=1, collate_fn=self._test_collate_fn
+        )

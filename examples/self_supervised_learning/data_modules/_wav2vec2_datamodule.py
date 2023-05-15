@@ -42,13 +42,12 @@ class Wav2Vec2DataModule(LightningDataModule):
         )
         sampler = DistributedBatchSampler(sampler, shuffle=self.train_shuffle)
         sampler.set_epoch(self.trainer.current_epoch)
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_sampler=sampler,
             collate_fn=CollateFnWav2Vec2(pad=False, rand_crop=True),
             num_workers=self.num_workers,
         )
-        return dataloader
 
     def val_dataloader(self):
         dataset = torch.utils.data.ConcatDataset(
@@ -66,10 +65,9 @@ class Wav2Vec2DataModule(LightningDataModule):
             max_len=250000,
             shuffle=False,
         )
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_sampler=sampler,
             collate_fn=CollateFnWav2Vec2(pad=False, rand_crop=True),
             num_workers=self.num_workers,
         )
-        return dataloader

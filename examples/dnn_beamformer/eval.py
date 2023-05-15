@@ -16,10 +16,11 @@ logger = logging.getLogger()
 def run_eval(args):
     model = DNNBeamformer()
     checkpoint = torch.load(args.checkpoint_path)
-    new_state_dict = {}
-    for k in checkpoint["state_dict"].keys():
-        if "loss" not in k:
-            new_state_dict[k.replace("model.", "")] = checkpoint["state_dict"][k]
+    new_state_dict = {
+        k.replace("model.", ""): checkpoint["state_dict"][k]
+        for k in checkpoint["state_dict"].keys()
+        if "loss" not in k
+    }
     model.load_state_dict(new_state_dict)
     model.eval()
     data_module = L3DAS22DataModule(dataset_path=args.dataset_path, batch_size=args.batch_size)
@@ -53,8 +54,8 @@ def run_eval(args):
         results = {"Ci-SDR": CI_SDR, "stoi": STOI, "pesq": PESQ}
         print("*******************************")
         print("RESULTS")
-        for i in results:
-            print(i, results[i])
+        for i, value in results.items():
+            print(i, value)
 
 
 def cli_main():

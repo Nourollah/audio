@@ -14,7 +14,8 @@ class Test_KaldiIO(common_utils.TorchaudioTestCase):
         """
         test_filepath = common_utils.get_asset_path(file_name)
         expected_output = {
-            "key" + str(idx + 1): torch.tensor(val, dtype=expected_dtype) for idx, val in enumerate(expected_data)
+            f"key{str(idx + 1)}": torch.tensor(val, dtype=expected_dtype)
+            for idx, val in enumerate(expected_data)
         }
 
         for key, vec in fn(test_filepath):

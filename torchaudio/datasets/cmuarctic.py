@@ -74,7 +74,7 @@ class CMUARCTIC(Dataset):
         self, root: Union[str, Path], url: str = URL, folder_in_archive: str = FOLDER_IN_ARCHIVE, download: bool = False
     ) -> None:
 
-        if url in [
+        if url in {
             "aew",
             "ahw",
             "aup",
@@ -93,13 +93,12 @@ class CMUARCTIC(Dataset):
             "rxr",
             "slp",
             "slt",
-        ]:
+        }:
 
-            url = "cmu_us_" + url + "_arctic"
-            ext_archive = ".tar.bz2"
+            url = f"cmu_us_{url}_arctic"
             base_url = "http://www.festvox.org/cmu_arctic/packed/"
 
-            url = os.path.join(base_url, url + ext_archive)
+            url = os.path.join(base_url, f"{url}.tar.bz2")
 
         # Get string representation of 'root' in case Path object is passed
         root = os.fspath(root)
@@ -120,12 +119,11 @@ class CMUARCTIC(Dataset):
                     checksum = _CHECKSUMS.get(url, None)
                     download_url_to_file(url, archive, hash_prefix=checksum)
                 _extract_tar(archive)
-        else:
-            if not os.path.exists(self._path):
-                raise RuntimeError(
-                    f"The path {self._path} doesn't exist. "
-                    "Please check the ``root`` path or set `download=True` to download it"
-                )
+        elif not os.path.exists(self._path):
+            raise RuntimeError(
+                f"The path {self._path} doesn't exist. "
+                "Please check the ``root`` path or set `download=True` to download it"
+            )
         self._text = os.path.join(self._path, self._folder_text, self._file_text)
 
         with open(self._text, "r") as text:

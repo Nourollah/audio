@@ -41,8 +41,9 @@ class HiFiGANTestImpl(TestBaseMixin):
         time_length = input_config["time_length"]
         in_channels = input_config["in_channels"]
 
-        input = torch.rand(batch_size, in_channels, time_length).to(device=self.device, dtype=self.dtype)
-        return input
+        return torch.rand(batch_size, in_channels, time_length).to(
+            device=self.device, dtype=self.dtype
+        )
 
     def setUp(self):
         super().setUp()

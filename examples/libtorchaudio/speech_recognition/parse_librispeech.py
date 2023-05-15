@@ -28,8 +28,7 @@ def _parse_args():
 def _parse_transcript(path):
     with open(path) as trans_fileobj:
         for line in trans_fileobj:
-            line = line.strip()
-            if line:
+            if line := line.strip():
                 yield line.split(" ", maxsplit=1)
 
 

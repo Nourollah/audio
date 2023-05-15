@@ -76,7 +76,7 @@ class Tacotron2EncoderTests(TorchscriptConsistencyMixin):
 
 
 def _get_decoder_model(n_mels=80, encoder_embedding_dim=512, decoder_max_step=2000, gate_threshold=0.5):
-    model = _Decoder(
+    return _Decoder(
         n_mels=n_mels,
         n_frames_per_step=1,
         encoder_embedding_dim=encoder_embedding_dim,
@@ -92,7 +92,6 @@ def _get_decoder_model(n_mels=80, encoder_embedding_dim=512, decoder_max_step=20
         prenet_dim=256,
         gate_threshold=gate_threshold,
     )
-    return model
 
 
 class Tacotron2DecoderTests(TorchscriptConsistencyMixin):

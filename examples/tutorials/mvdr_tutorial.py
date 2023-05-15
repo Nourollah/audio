@@ -224,7 +224,7 @@ stft_noise = stft(waveform_noise)
 # (STOI) metric.
 
 plot_spectrogram(stft_mix[0], "Spectrogram of Mixture Speech (dB)")
-evaluate(waveform_mix[0:1], waveform_clean[0:1])
+evaluate(waveform_mix[:1], waveform_clean[:1])
 Audio(waveform_mix[0], rate=SAMPLE_RATE)
 
 
@@ -337,7 +337,7 @@ waveform_souden = istft(stft_souden, length=waveform_mix.shape[-1])
 
 plot_spectrogram(stft_souden, "Enhanced Spectrogram by SoudenMVDR (dB)")
 waveform_souden = waveform_souden.reshape(1, -1)
-evaluate(waveform_souden, waveform_clean[0:1])
+evaluate(waveform_souden, waveform_clean[:1])
 Audio(waveform_souden, rate=SAMPLE_RATE)
 
 
@@ -395,7 +395,7 @@ waveform_rtf_power = istft(stft_rtf_power, length=waveform_mix.shape[-1])
 
 plot_spectrogram(stft_rtf_evd, "Enhanced Spectrogram by RTFMVDR and F.rtf_evd (dB)")
 waveform_rtf_evd = waveform_rtf_evd.reshape(1, -1)
-evaluate(waveform_rtf_evd, waveform_clean[0:1])
+evaluate(waveform_rtf_evd, waveform_clean[:1])
 Audio(waveform_rtf_evd, rate=SAMPLE_RATE)
 
 
@@ -406,5 +406,5 @@ Audio(waveform_rtf_evd, rate=SAMPLE_RATE)
 
 plot_spectrogram(stft_rtf_power, "Enhanced Spectrogram by RTFMVDR and F.rtf_power (dB)")
 waveform_rtf_power = waveform_rtf_power.reshape(1, -1)
-evaluate(waveform_rtf_power, waveform_clean[0:1])
+evaluate(waveform_rtf_power, waveform_clean[:1])
 Audio(waveform_rtf_power, rate=SAMPLE_RATE)

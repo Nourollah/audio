@@ -33,8 +33,7 @@ class DNNBeamformer(torch.nn.Module):
         psd_speech = self.psd(spectrum, mask_speech)
         psd_noise = self.psd(spectrum, mask_noise)
         enhanced_stft = self.beamformer(spectrum, psd_speech, psd_noise, self.ref_channel)
-        enhanced_waveform = self.istft(enhanced_stft, length=mixture.shape[-1])
-        return enhanced_waveform
+        return self.istft(enhanced_stft, length=mixture.shape[-1])
 
 
 class DNNBeamformerLightningModule(pl.LightningModule):

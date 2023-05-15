@@ -48,9 +48,8 @@ class WarmupLR(torch.optim.lr_scheduler._LRScheduler):
     def get_lr(self):
         if self._step_count < self.force_anneal_step:
             return [(min(1.0, self._step_count / self.warmup_steps)) * base_lr for base_lr in self.base_lrs]
-        else:
-            scaling_factor = self.anneal_factor ** (self._step_count - self.force_anneal_step)
-            return [scaling_factor * base_lr for base_lr in self.base_lrs]
+        scaling_factor = self.anneal_factor ** (self._step_count - self.force_anneal_step)
+        return [scaling_factor * base_lr for base_lr in self.base_lrs]
 
 
 def post_process_hypos(
@@ -70,9 +69,7 @@ def post_process_hypos(
     hypos_ids = [h[tokens_idx][1:] for h in hypos]
     hypos_score = [[math.exp(h[score_idx])] for h in hypos]
 
-    nbest_batch = list(zip(hypos_str, hypos_score, hypos_ids))
-
-    return nbest_batch
+    return list(zip(hypos_str, hypos_score, hypos_ids))
 
 
 class ConformerRNNTModule(LightningModule):

@@ -236,8 +236,7 @@ def griffin_lim_vocode(
     if jit:
         vocoder = torch.jit.script(vocoder)
 
-    waveform = vocoder(mel_specgram.cpu())
-    return waveform
+    return vocoder(mel_specgram.cpu())
 
 
 def main(args):

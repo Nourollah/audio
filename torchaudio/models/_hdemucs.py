@@ -66,8 +66,7 @@ class _ScaledEmbedding(torch.nn.Module):
             (Tensor):
                 Embedding output of shape `(num_embeddings, embedding_dim)`
         """
-        out = self.embedding(x) * self.scale
-        return out
+        return self.embedding(x) * self.scale
 
 
 class _HEncLayer(torch.nn.Module):
@@ -156,7 +155,7 @@ class _HEncLayer(torch.nn.Module):
 
         if not self.freq:
             le = x.shape[-1]
-            if not le % self.stride == 0:
+            if le % self.stride != 0:
                 x = F.pad(x, (0, self.stride - (le % self.stride)))
         y = self.conv(x)
         if self.empty:
@@ -431,7 +430,7 @@ class HDemucs(torch.nn.Module):
 
             enc = _HEncLayer(chin_z, chout_z, context=context_enc, **kw)
             if freq:
-                if last_freq is True and nfft == 2048:
+                if last_freq and nfft == 2048:
                     kwt["stride"] = 2
                     kwt["kernel_size"] = 4
                 tenc = _HEncLayer(chin, chout, context=context_enc, empty=last_freq, **kwt)
@@ -614,11 +613,11 @@ class HDemucs(torch.nn.Module):
                     skip = saved_t.pop(-1)
                     xt, _ = tdec(xt, skip, length_t)
 
-        if len(saved) != 0:
+        if saved:
             raise AssertionError("saved is not empty")
-        if len(lengths_t) != 0:
+        if lengths_t:
             raise AssertionError("lengths_t is not empty")
-        if len(saved_t) != 0:
+        if saved_t:
             raise AssertionError("saved_t is not empty")
 
         S = len(self.sources)
@@ -900,8 +899,7 @@ def _unfold(a: torch.Tensor, kernel_size: int, stride: int) -> torch.Tensor:
     if strides[-1] != 1:
         raise ValueError("Data should be contiguous.")
     strides = strides[:-1] + [stride, 1]
-    shape.append(n_frames)
-    shape.append(kernel_size)
+    shape.extend((n_frames, kernel_size))
     return a.as_strided(shape, strides)
 
 

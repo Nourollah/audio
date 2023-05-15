@@ -32,22 +32,21 @@ def get_mock_dataset(dataset_dir):
     mocked_samples = {}
     os.makedirs(dataset_dir, exist_ok=True)
     sample_rate = 16000  # 16kHz
-    seed = 0
-
-    for release in ["release1", "release2", "release3"]:
+    for seed, release in enumerate(["release1", "release2", "release3"]):
         data = get_whitenoise(sample_rate=sample_rate, duration=10.00, n_channels=1, dtype="float32", seed=seed)
-        if release in ["release1", "release2"]:
-            release_dir = os.path.join(
+        release_dir = (
+            os.path.join(
                 dataset_dir,
                 tedlium._RELEASE_CONFIGS[release]["folder_in_archive"],
                 tedlium._RELEASE_CONFIGS[release]["subset"],
             )
-        else:
-            release_dir = os.path.join(
+            if release in ["release1", "release2"]
+            else os.path.join(
                 dataset_dir,
                 tedlium._RELEASE_CONFIGS[release]["folder_in_archive"],
                 tedlium._RELEASE_CONFIGS[release]["data_path"],
             )
+        )
         os.makedirs(release_dir, exist_ok=True)
         os.makedirs(os.path.join(release_dir, "stm"), exist_ok=True)  # Subfolder for transcripts
         os.makedirs(os.path.join(release_dir, "sph"), exist_ok=True)  # Subfolder for audio files
@@ -80,7 +79,6 @@ def get_mock_dataset(dataset_dir):
                 identifier,
             )
             mocked_samples[release].append(sample)
-        seed += 1
     return mocked_samples
 
 

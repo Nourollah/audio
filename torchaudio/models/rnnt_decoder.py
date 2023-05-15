@@ -36,9 +36,10 @@ def _get_hypo_key(hypo: Hypothesis) -> str:
 def _batch_state(hypos: List[Hypothesis]) -> List[List[torch.Tensor]]:
     states: List[List[torch.Tensor]] = []
     for i in range(len(_get_hypo_state(hypos[0]))):
-        batched_state_components: List[torch.Tensor] = []
-        for j in range(len(_get_hypo_state(hypos[0])[i])):
-            batched_state_components.append(torch.cat([_get_hypo_state(hypo)[i][j] for hypo in hypos]))
+        batched_state_components: List[torch.Tensor] = [
+            torch.cat([_get_hypo_state(hypo)[i][j] for hypo in hypos])
+            for j in range(len(_get_hypo_state(hypos[0])[i]))
+        ]
         states.append(batched_state_components)
     return states
 
@@ -200,11 +201,9 @@ class RNNTBeamSearch(torch.nn.Module):
                 new_scores.append(score)
 
         if base_hypos:
-            new_hypos = self._gen_new_hypos(base_hypos, new_tokens, new_scores, t, device)
+            return self._gen_new_hypos(base_hypos, new_tokens, new_scores, t, device)
         else:
-            new_hypos: List[Hypothesis] = []
-
-        return new_hypos
+            return []
 
     def _gen_new_hypos(
         self,
@@ -283,12 +282,12 @@ class RNNTBeamSearch(torch.nn.Module):
         Returns:
             List[Hypothesis]: top-``beam_width`` hypotheses found by beam search.
         """
-        if input.dim() != 2 and not (input.dim() == 3 and input.shape[0] == 1):
+        if input.dim() != 2 and (input.dim() != 3 or input.shape[0] != 1):
             raise ValueError("input must be of shape (T, D) or (1, T, D)")
         if input.dim() == 2:
             input = input.unsqueeze(0)
 
-        if length.shape != () and length.shape != (1,):
+        if length.shape not in [(), (1,)]:
             raise ValueError("length must be of shape () or (1,)")
         if input.dim() == 0:
             input = input.unsqueeze(0)
@@ -329,12 +328,12 @@ class RNNTBeamSearch(torch.nn.Module):
                     list of lists of tensors representing transcription network
                     internal state generated in current invocation.
         """
-        if input.dim() != 2 and not (input.dim() == 3 and input.shape[0] == 1):
+        if input.dim() != 2 and (input.dim() != 3 or input.shape[0] != 1):
             raise ValueError("input must be of shape (T, D) or (1, T, D)")
         if input.dim() == 2:
             input = input.unsqueeze(0)
 
-        if length.shape != () and length.shape != (1,):
+        if length.shape not in [(), (1,)]:
             raise ValueError("length must be of shape () or (1,)")
         if length.dim() == 0:
             length = length.unsqueeze(0)

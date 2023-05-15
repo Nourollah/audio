@@ -344,9 +344,15 @@ class TestTransforms(common_utils.TorchaudioTestCase):
         expected = []
         for i in range(leading_dims[0]):
             for j in range(leading_dims[1]):
-                for k in range(leading_dims[2]):
-                    expected.append(add_noise(waveform[i][j][k], noise[i][j][k], snr[i][j][k], lengths[i][j][k]))
-
+                expected.extend(
+                    add_noise(
+                        waveform[i][j][k],
+                        noise[i][j][k],
+                        snr[i][j][k],
+                        lengths[i][j][k],
+                    )
+                    for k in range(leading_dims[2])
+                )
         self.assertEqual(torch.stack(expected), actual.reshape(-1, L))
 
     def test_preemphasis(self):
@@ -357,9 +363,9 @@ class TestTransforms(common_utils.TorchaudioTestCase):
         expected = []
         for i in range(waveform.size(0)):
             for j in range(waveform.size(1)):
-                for k in range(waveform.size(2)):
-                    expected.append(preemphasis(waveform[i][j][k]))
-
+                expected.extend(
+                    preemphasis(waveform[i][j][k]) for k in range(waveform.size(2))
+                )
         self.assertEqual(torch.stack(expected), actual.reshape(-1, waveform.size(-1)))
 
     def test_deemphasis(self):
@@ -370,7 +376,5 @@ class TestTransforms(common_utils.TorchaudioTestCase):
         expected = []
         for i in range(waveform.size(0)):
             for j in range(waveform.size(1)):
-                for k in range(waveform.size(2)):
-                    expected.append(deemphasis(waveform[i][j][k]))
-
+                expected.extend(deemphasis(waveform[i][j][k]) for k in range(waveform.size(2)))
         self.assertEqual(torch.stack(expected), actual.reshape(-1, waveform.size(-1)))

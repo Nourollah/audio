@@ -37,7 +37,7 @@ def save_checkpoint(state, is_best, filename, disable):
     if filename == "":
         return
 
-    tempfile = filename + ".temp"
+    tempfile = f"{filename}.temp"
 
     # Remove tempfile in case interuption during the copying from tempfile to filename
     if os.path.isfile(tempfile):

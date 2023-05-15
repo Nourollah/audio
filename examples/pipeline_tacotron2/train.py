@@ -194,7 +194,7 @@ def adjust_learning_rate(epoch, optimizer, learning_rate, anneal_steps, anneal_f
     """Adjust learning rate base on the initial setting."""
     p = 0
     if anneal_steps is not None:
-        for _, a_step in enumerate(anneal_steps):
+        for a_step in anneal_steps:
             if epoch >= int(a_step):
                 p = p + 1
 
@@ -245,10 +245,7 @@ def validation_step(model, val_batch, batch_idx):
 def reduce_tensor(tensor, world_size):
     rt = tensor.clone()
     dist.all_reduce(rt, op=dist.ReduceOp.SUM)
-    if rt.is_floating_point():
-        rt = rt / world_size
-    else:
-        rt = rt // world_size
+    rt = rt / world_size if rt.is_floating_point() else rt // world_size
     return rt
 
 
@@ -477,7 +474,7 @@ def train(rank, world_size, args):
 
 
 def main(args):
-    logger.info("Start time: {}".format(str(datetime.now())))
+    logger.info(f"Start time: {str(datetime.now())}")
 
     torch.manual_seed(0)
     random.seed(0)

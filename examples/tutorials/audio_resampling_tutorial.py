@@ -77,8 +77,7 @@ def get_sine_sweep(sample_rate, offset=DEFAULT_OFFSET):
     freq = _get_log_freq(sample_rate, max_sweep_rate, offset)
     delta = 2 * math.pi * freq / sample_rate
     cummulative = torch.cumsum(delta, dim=0)
-    signal = torch.sin(cummulative).unsqueeze(dim=0)
-    return signal
+    return torch.sin(cummulative).unsqueeze(dim=0)
 
 
 def plot_sweep(
@@ -473,8 +472,9 @@ def benchmark(sample_rate, resample_rate):
     times.append([lib_time, f_time, t_time])
     rows.append("kaiser_fast")
 
-    df = pd.DataFrame(times, columns=["librosa", "functional", "transforms"], index=rows)
-    return df
+    return pd.DataFrame(
+        times, columns=["librosa", "functional", "transforms"], index=rows
+    )
 
 
 ######################################################################

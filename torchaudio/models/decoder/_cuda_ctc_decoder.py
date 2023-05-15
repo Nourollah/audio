@@ -97,9 +97,9 @@ class CUCTCDecoder:
             List[List[CUCTCHypothesis]]:
                 List of sorted best hypotheses for each audio sequence in the batch.
         """
-        if not encoder_out_lens.dtype == torch.int32:
+        if encoder_out_lens.dtype != torch.int32:
             raise AssertionError("encoder_out_lens must be torch.int32")
-        if not log_prob.dtype == torch.float32:
+        if log_prob.dtype != torch.float32:
             raise AssertionError("log_prob must be torch.float32")
         if not (log_prob.is_cuda and encoder_out_lens.is_cuda):
             raise AssertionError("inputs must be cuda tensors")
@@ -134,19 +134,19 @@ class CUCTCDecoder:
                 self.blank_skip_threshold,
             )
         batch_size = len(score_hyps)
-        hypos = []
-        for i in range(batch_size):
-            hypos.append(
-                [
-                    CUCTCHypothesis(
-                        tokens=score_hyps[i][j][1],
-                        words=[self.vocab_list[word_id] for word_id in score_hyps[i][j][1]],
-                        score=score_hyps[i][j][0],
-                    )
-                    for j in range(self.nbest)
-                ]
-            )
-        return hypos
+        return [
+            [
+                CUCTCHypothesis(
+                    tokens=score_hyps[i][j][1],
+                    words=[
+                        self.vocab_list[word_id] for word_id in score_hyps[i][j][1]
+                    ],
+                    score=score_hyps[i][j][0],
+                )
+                for j in range(self.nbest)
+            ]
+            for i in range(batch_size)
+        ]
 
 
 def cuda_ctc_decoder(

@@ -61,7 +61,7 @@ class YESNO(Dataset):
 
     def _load_item(self, fileid: str, path: str):
         labels = [int(c) for c in fileid.split("_")]
-        file_audio = os.path.join(path, fileid + ".wav")
+        file_audio = os.path.join(path, f"{fileid}.wav")
         waveform, sample_rate = torchaudio.load(file_audio)
         return waveform, sample_rate, labels
 
@@ -82,8 +82,7 @@ class YESNO(Dataset):
                 labels
         """
         fileid = self._walker[n]
-        item = self._load_item(fileid, self._path)
-        return item
+        return self._load_item(fileid, self._path)
 
     def __len__(self) -> int:
         return len(self._walker)

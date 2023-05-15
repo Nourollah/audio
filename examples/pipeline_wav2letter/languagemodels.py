@@ -26,13 +26,10 @@ class LanguageModel:
     def decode(self, tensor):
         if len(tensor) > 0 and isinstance(tensor[0], list):
             return [self.decode(t) for t in tensor]
-        else:
-            # not idempotent, since clean string
-            x = (self.mapping[i] for i in tensor)
-            x = "".join(i for i, _ in itertools.groupby(x))
-            x = x.replace(self.char_blank, "")
-            # x = x.strip()
-            return x
+        # not idempotent, since clean string
+        x = (self.mapping[i] for i in tensor)
+        x = "".join(i for i, _ in itertools.groupby(x))
+        return x.replace(self.char_blank, "")
 
     def __len__(self):
         return self.length

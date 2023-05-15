@@ -53,7 +53,7 @@ def _get_mocked_samples(dataset_dir: str, subset: str, seed: int):
             wav_path = os.path.join(subset_dir, f"{wav_stem}.wav")
             waveform = _save_wav(wav_path, seed)
             transcript, iob, intent = f"{spk}XXX", f"{spk}YYY", f"{spk}ZZZ"
-            label = "BOS " + transcript + " EOS\tO " + iob + " " + intent
+            label = f"BOS {transcript}" + " EOS\tO " + iob + " " + intent
             _save_label(label_path, wav_stem, label)
             samples.append((waveform, _SAMPLE_RATE, wav_stem, transcript, iob, intent))
     return samples

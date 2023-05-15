@@ -71,7 +71,7 @@ def cli_main():
     model.load_state_dict(state_dict)
 
     if args.gpu_device != -1:
-        device = torch.device("cuda:" + str(args.gpu_device))
+        device = torch.device(f"cuda:{str(args.gpu_device)}")
     else:
         device = torch.device("cpu")
 

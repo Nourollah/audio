@@ -45,25 +45,27 @@ def _get_load_filter(
     convert: bool = True,
 ) -> Optional[str]:
     if frame_offset < 0:
-        raise RuntimeError("Invalid argument: frame_offset must be non-negative. Found: {}".format(frame_offset))
+        raise RuntimeError(
+            f"Invalid argument: frame_offset must be non-negative. Found: {frame_offset}"
+        )
     if num_frames == 0 or num_frames < -1:
-        raise RuntimeError("Invalid argument: num_frames must be -1 or greater than 0. Found: {}".format(num_frames))
+        raise RuntimeError(
+            f"Invalid argument: num_frames must be -1 or greater than 0. Found: {num_frames}"
+        )
 
     # All default values -> no filter
     if frame_offset == 0 and num_frames == -1 and not convert:
         return None
     # Only convert
     aformat = "aformat=sample_fmts=fltp"
-    if frame_offset == 0 and num_frames == -1 and convert:
+    if frame_offset == 0 and num_frames == -1:
         return aformat
     # At least one of frame_offset or num_frames has non-default value
     if num_frames > 0:
-        atrim = "atrim=start_sample={}:end_sample={}".format(frame_offset, frame_offset + num_frames)
+        atrim = f"atrim=start_sample={frame_offset}:end_sample={frame_offset + num_frames}"
     else:
-        atrim = "atrim=start_sample={}".format(frame_offset)
-    if not convert:
-        return atrim
-    return "{},{}".format(atrim, aformat)
+        atrim = f"atrim=start_sample={frame_offset}"
+    return atrim if not convert else f"{atrim},{aformat}"
 
 
 def _load_audio_fileobj(
@@ -125,10 +127,7 @@ def _get_sample_format(dtype: torch.dtype) -> str:
 
 
 def _native_endianness() -> str:
-    if sys.byteorder == "little":
-        return "le"
-    else:
-        return "be"
+    return "le" if sys.byteorder == "little" else "be"
 
 
 def _get_encoder_for_wav(dtype: torch.dtype, encoding: str, bits_per_sample: int) -> str:
@@ -136,36 +135,39 @@ def _get_encoder_for_wav(dtype: torch.dtype, encoding: str, bits_per_sample: int
         raise ValueError(f"Invalid bits_per_sample {bits_per_sample} for WAV encoding.")
     endianness = _native_endianness()
     if not encoding:
-        if not bits_per_sample:
+        if bits_per_sample:
+            return (
+                "pcm_u8"
+                if bits_per_sample == 8
+                else f"pcm_s{bits_per_sample}{endianness}"
+            )
+        else:
             # default to PCM S16
             return f"pcm_s16{endianness}"
-        if bits_per_sample == 8:
-            return "pcm_u8"
-        return f"pcm_s{bits_per_sample}{endianness}"
-    if encoding == "PCM_S":
+    if encoding == "ALAW":
+        if bits_per_sample in {None, 8}:
+            return "pcm_alaw"
+        raise ValueError("For WAV PCM A-law, only 8-bit encoding is supported.")
+    elif encoding == "PCM_F":
+        if not bits_per_sample:
+            bits_per_sample = 32
+        if bits_per_sample in {32, 64}:
+            return f"pcm_f{bits_per_sample}{endianness}"
+        raise ValueError("For WAV float PCM, only 32- and 64-bit encodings are supported.")
+    elif encoding == "PCM_S":
         if not bits_per_sample:
             bits_per_sample = 16
         if bits_per_sample == 8:
             raise ValueError("For WAV signed PCM, 8-bit encoding is not supported.")
         return f"pcm_s{bits_per_sample}{endianness}"
     elif encoding == "PCM_U":
-        if bits_per_sample in (None, 8):
+        if bits_per_sample in {None, 8}:
             return "pcm_u8"
         raise ValueError("For WAV unsigned PCM, only 8-bit encoding is supported.")
-    elif encoding == "PCM_F":
-        if not bits_per_sample:
-            bits_per_sample = 32
-        if bits_per_sample in (32, 64):
-            return f"pcm_f{bits_per_sample}{endianness}"
-        raise ValueError("For WAV float PCM, only 32- and 64-bit encodings are supported.")
     elif encoding == "ULAW":
-        if bits_per_sample in (None, 8):
+        if bits_per_sample in {None, 8}:
             return "pcm_mulaw"
         raise ValueError("For WAV PCM mu-law, only 8-bit encoding is supported.")
-    elif encoding == "ALAW":
-        if bits_per_sample in (None, 8):
-            return "pcm_alaw"
-        raise ValueError("For WAV PCM A-law, only 8-bit encoding is supported.")
     raise ValueError(f"WAV encoding {encoding} is not supported.")
 
 
@@ -174,7 +176,7 @@ def _get_encoder(dtype: torch.dtype, format: str, encoding: str, bits_per_sample
         return _get_encoder_for_wav(dtype, encoding, bits_per_sample)
     if format == "flac":
         return "flac"
-    if format in ("ogg", "vorbis"):
+    if format in {"ogg", "vorbis"}:
         if encoding or bits_per_sample:
             raise ValueError("ogg/vorbis does not support encoding/bits_per_sample.")
         return "vorbis"

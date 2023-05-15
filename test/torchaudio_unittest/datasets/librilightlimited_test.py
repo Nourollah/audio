@@ -14,8 +14,7 @@ def _save_sample(file_path, speaker_id, chapter_id, utterance_id, sample_rate, s
     data = get_whitenoise(sample_rate=sample_rate, duration=0.01, n_channels=1, dtype="float32", seed=seed)
     transcript = " ".join([_NUMBERS[x] for x in [speaker_id, chapter_id, utterance_id]])
     save_wav(path, data, sample_rate)
-    sample = (data, sample_rate, transcript, speaker_id, chapter_id, utterance_id)
-    return sample
+    return data, sample_rate, transcript, speaker_id, chapter_id, utterance_id
 
 
 def get_mock_dataset(dataset_dir: str):

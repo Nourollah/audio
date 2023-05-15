@@ -5,7 +5,7 @@ from torchaudio_unittest.common_utils import TestBaseMixin, torch_script
 
 class ConformerTestImpl(TestBaseMixin):
     def _gen_model(self):
-        conformer = (
+        return (
             Conformer(
                 input_dim=80,
                 num_heads=4,
@@ -17,7 +17,6 @@ class ConformerTestImpl(TestBaseMixin):
             .to(device=self.device, dtype=self.dtype)
             .eval()
         )
-        return conformer
 
     def _gen_inputs(self, input_dim, batch_size, num_frames):
         lengths = torch.randint(1, num_frames, (batch_size,)).to(device=self.device, dtype=self.dtype)

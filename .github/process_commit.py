@@ -65,8 +65,7 @@ def get_pr_merger_and_number(commit_hash: str) -> Optional[str]:
 
 def get_labels(pr_number: int) -> Set[str]:
     data = query_torchaudio(f"pulls/{pr_number}")
-    labels = {label["name"] for label in data["labels"]}
-    return labels
+    return {label["name"] for label in data["labels"]}
 
 
 def post_github_comment(pr_number: int, merger: str) -> Any:

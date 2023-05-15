@@ -65,10 +65,17 @@ def build_ffmpeg_job(os_type, filter_branch):
 
 def build_workflow_pair(btype, os_type, python_version, cu_version, filter_branch, prefix="", upload=False):
 
-    w = []
     base_workflow_name = f"{prefix}binary_{os_type}_{btype}_py{python_version}_{cu_version}"
-    w.append(generate_base_workflow(base_workflow_name, python_version, cu_version, filter_branch, os_type, btype))
-
+    w = [
+        generate_base_workflow(
+            base_workflow_name,
+            python_version,
+            cu_version,
+            filter_branch,
+            os_type,
+            btype,
+        )
+    ]
     if upload:
         w.append(generate_upload_workflow(base_workflow_name, filter_branch, os_type, btype, cu_version))
 
@@ -140,7 +147,7 @@ def generate_upload_workflow(base_workflow_name, filter_branch, os_type, btype, 
     }
 
     if btype == "wheel":
-        d["subfolder"] = "" if os_type == "macos" else cu_version + "/"
+        d["subfolder"] = "" if os_type == "macos" else f"{cu_version}/"
 
     if filter_branch:
         d["filters"] = gen_filter_branch_tree(filter_branch)
@@ -162,7 +169,11 @@ def generate_smoketest_workflow(pydistro, base_workflow_name, filter_branch, pyt
         d["filters"] = gen_filter_branch_tree(filter_branch)
 
     smoke_name = f"smoke_test_{os_type}_{pydistro}"
-    if pydistro == "conda" and (os_type == "linux" or os_type == "windows") and cu_version != "cpu":
+    if (
+        pydistro == "conda"
+        and os_type in ["linux", "windows"]
+        and cu_version != "cpu"
+    ):
         smoke_name += "_gpu"
     return {smoke_name: d}
 

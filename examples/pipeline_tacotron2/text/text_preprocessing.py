@@ -24,6 +24,7 @@
 Modified from https://github.com/keithito/tacotron
 """
 
+
 import re
 from typing import List, Optional, Union
 
@@ -70,8 +71,8 @@ symbols = [_pad] + list(_special) + list(_punctuation) + list(_letters)
 _phonemizer = None
 
 
-available_symbol_set = set(["english_characters", "english_phonemes"])
-available_phonemizers = set(["DeepPhonemizer"])
+available_symbol_set = {"english_characters", "english_phonemes"}
+available_phonemizers = {"DeepPhonemizer"}
 
 
 def get_symbol_list(symbol_list: str = "english_characters", cmudict_root: Optional[str] = "./") -> List[str]:
@@ -87,34 +88,33 @@ def get_symbol_list(symbol_list: str = "english_characters", cmudict_root: Optio
 
 
 def word_to_phonemes(sent: str, phonemizer: str, checkpoint: str) -> List[str]:
-    if phonemizer == "DeepPhonemizer":
-        from dp.phonemizer import Phonemizer
-
-        global _phonemizer
-        _other_symbols = "".join(list(_special) + list(_punctuation))
-        _phone_symbols_re = r"(\[[A-Z]+?\]|" + "[" + _other_symbols + "])"  # [\[([A-Z]+?)\]|[-!'(),.:;? ]]
-
-        if _phonemizer is None:
-            # using a global variable so that we don't have to relode checkpoint
-            # everytime this function is called
-            _phonemizer = Phonemizer.from_checkpoint(checkpoint)
-
-        # Example:
-        # sent = "hello world!"
-        # '[HH][AH][L][OW] [W][ER][L][D]!'
-        sent = _phonemizer(sent, lang="en_us")
-
-        # ['[HH]', '[AH]', '[L]', '[OW]', ' ', '[W]', '[ER]', '[L]', '[D]', '!']
-        ret = re.findall(_phone_symbols_re, sent)
-
-        # ['HH', 'AH', 'L', 'OW', ' ', 'W', 'ER', 'L', 'D', '!']
-        ret = [r.replace("[", "").replace("]", "") for r in ret]
-
-        return ret
-    else:
+    if phonemizer != "DeepPhonemizer":
         raise ValueError(
             f"The `phonemizer` {phonemizer} is not supported. " "Supported `symbol_list` includes `'DeepPhonemizer'`."
         )
+    from dp.phonemizer import Phonemizer
+
+    global _phonemizer
+    _other_symbols = "".join(list(_special) + list(_punctuation))
+    _phone_symbols_re = r"(\[[A-Z]+?\]|" + "[" + _other_symbols + "])"  # [\[([A-Z]+?)\]|[-!'(),.:;? ]]
+
+    if _phonemizer is None:
+        # using a global variable so that we don't have to relode checkpoint
+        # everytime this function is called
+        _phonemizer = Phonemizer.from_checkpoint(checkpoint)
+
+    # Example:
+    # sent = "hello world!"
+    # '[HH][AH][L][OW] [W][ER][L][D]!'
+    sent = _phonemizer(sent, lang="en_us")
+
+    # ['[HH]', '[AH]', '[L]', '[OW]', ' ', '[W]', '[ER]', '[L]', '[D]', '!']
+    ret = re.findall(_phone_symbols_re, sent)
+
+    # ['HH', 'AH', 'L', 'OW', ' ', 'W', 'ER', 'L', 'D', '!']
+    ret = [r.replace("[", "").replace("]", "") for r in ret]
+
+    return ret
 
 
 def text_to_sequence(

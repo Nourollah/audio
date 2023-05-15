@@ -22,11 +22,10 @@ def _gen_rand_str(n: int, seed: int):
 
 
 def _gen_csv(dataset_dir: str, subset: str, init_seed: int):
-    data = []
-    data.append(HEADER)
-
+    data = [HEADER]
     idx = 0
     seed = init_seed
+    transcription = ""
     for _ in range(NUM_SPEAKERS):
         speaker_id = _gen_rand_str(5, seed=seed)
         speaker_dir = os.path.join(dataset_dir, "wavs", "speakers", speaker_id)
@@ -38,7 +37,6 @@ def _gen_csv(dataset_dir: str, subset: str, init_seed: int):
             path = f"wavs/speakers/{speaker_id}/{filename}.wav"
 
             random.seed(seed)
-            transcription = ""
             act = random.choice(ACTIONS)
             obj = random.choice(OBJECTS)
             loc = random.choice(LOCATIONS)

@@ -39,11 +39,11 @@ def run_eval(args):
     refout = []
     with torch.no_grad():
         for idx, (batch, sample) in enumerate(dataloader):
-            filename = "librispeech_clean_100_{}".format(idx)
+            filename = f"librispeech_clean_100_{idx}"
             actual = sample[0][2]
             predicted = model(batch)
-            hypout.append("{} ({})\n".format(predicted.upper().strip(), filename))
-            refout.append("{} ({})\n".format(actual.upper().strip(), filename))
+            hypout.append(f"{predicted.upper().strip()} ({filename})\n")
+            refout.append(f"{actual.upper().strip()} ({filename})\n")
             total_edit_distance += compute_word_level_distance(actual, predicted)
             total_length += len(actual.split())
             if idx % 100 == 0:

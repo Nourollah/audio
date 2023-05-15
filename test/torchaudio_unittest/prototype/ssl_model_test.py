@@ -49,10 +49,7 @@ class TestSSLModel(TorchaudioTestCase):
         ]
     )
     def test_extract_feature(self, model, feature_dim, aux_num_out):
-        if aux_num_out is not None:
-            model = model(aux_num_out=aux_num_out)
-        else:
-            model = model()
+        model = model(aux_num_out=aux_num_out) if aux_num_out is not None else model()
         model.eval()
 
         batch_size, num_frames = 3, 1024
@@ -92,10 +89,7 @@ class TestSSLModel(TorchaudioTestCase):
         ]
     )
     def test_zero_length(self, model, feature_dim, aux_num_out):
-        if aux_num_out is not None:
-            model = model(aux_num_out=aux_num_out)
-        else:
-            model = model()
+        model = model(aux_num_out=aux_num_out) if aux_num_out is not None else model()
         model.eval()
 
         batch_size, num_frames = 3, 1024
@@ -115,10 +109,7 @@ class TestSSLModel(TorchaudioTestCase):
         ]
     )
     def test_torchscript_consistency(self, model, feature_dim, aux_num_out):
-        if aux_num_out is not None:
-            model = model(aux_num_out=aux_num_out)
-        else:
-            model = model()
+        model = model(aux_num_out=aux_num_out) if aux_num_out is not None else model()
         model.eval()
 
         batch_size, num_frames = 3, 1024

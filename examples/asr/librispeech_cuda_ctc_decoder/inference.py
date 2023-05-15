@@ -94,7 +94,10 @@ def run_inference(args):
         for transcript, nbest_pred in zip(transcripts, preds):
             total_edit_distance += torchaudio.functional.edit_distance(transcript.split(), nbest_pred[0])
             oracle_edit_distance += min(
-                [torchaudio.functional.edit_distance(transcript.split(), nbest_pred[i]) for i in range(len(nbest_pred))]
+                torchaudio.functional.edit_distance(
+                    transcript.split(), nbest_pred[i]
+                )
+                for i in range(len(nbest_pred))
             )
             total_length += len(transcript.split())
 

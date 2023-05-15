@@ -32,7 +32,7 @@ def get_sample_lengths(librispeech_dataset):
         if fileid not in fileid_to_target_length:
             speaker_id, chapter_id, _ = fileid.split("-")
 
-            file_text = speaker_id + "-" + chapter_id + librispeech_dataset._ext_txt
+            file_text = f"{speaker_id}-{chapter_id}{librispeech_dataset._ext_txt}"
             file_text = os.path.join(librispeech_dataset._path, speaker_id, chapter_id, file_text)
 
             with open(file_text) as ft:
@@ -154,13 +154,12 @@ class LibriSpeechDataModule(LightningDataModule):
             ]
         )
         dataset = TransformDataset(dataset, self.train_transform)
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             num_workers=self.num_workers,
             batch_size=None,
             shuffle=self.train_shuffle,
         )
-        return dataloader
 
     def val_dataloader(self):
         datasets = [
@@ -184,11 +183,11 @@ class LibriSpeechDataModule(LightningDataModule):
             ]
         )
         dataset = TransformDataset(dataset, self.val_transform)
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=None, num_workers=self.num_workers)
-        return dataloader
+        return torch.utils.data.DataLoader(
+            dataset, batch_size=None, num_workers=self.num_workers
+        )
 
     def test_dataloader(self):
         dataset = self.librispeech_cls(self.librispeech_path, url="test-clean")
         dataset = TransformDataset(dataset, self.test_transform)
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=None)
-        return dataloader
+        return torch.utils.data.DataLoader(dataset, batch_size=None)

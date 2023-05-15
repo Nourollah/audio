@@ -15,10 +15,7 @@ with open("word_freq.txt") as fin:
         freqlist[word.upper()] = int(freq)
 
 with open("../blists/all_rare_words.txt") as fin:
-    rareset = set()
-    for line in fin:
-        rareset.add(line.strip().upper())
-
+    rareset = {line.strip().upper() for line in fin}
 project_set = set()
 with open(infile) as fin:
     lines = fin.readlines()
@@ -48,10 +45,10 @@ for i, line in enumerate(lines):
                     error_words_freqs[word.upper()] = 1
                 elif word == word.lower() and word.upper() not in error_words_freqs:
                     if word == word.upper():
-                        print("special token found in: {}".format(project))
+                        print(f"special token found in: {project}")
                     error_words_freqs[word.upper()] = 0
                 elif word == word.upper():
-                    print("special token found in: {}".format(project))
+                    print(f"special token found in: {project}")
 print(len(error_words_freqs.keys()))
 print(insert_rare)
 
@@ -79,7 +76,7 @@ for word, error in error_words_freqs.items():
         rare_error += error
     elif word not in freqlist:
         oovwords.append(word)
-        oov_freq += freqlist_test[word] if word in freqlist_test else 1
+        oov_freq += freqlist_test.get(word, 1)
         oov_error += error
     else:
         commonwords.append(word)
@@ -92,21 +89,19 @@ total_errors = common_error + rare_error + oov_error + insert_error
 WER = total_errors / total_words
 print("=" * 89)
 print(
-    "Common words error freq: {} / {} = {}".format(
-        common_error + insert_common, common_freq, (common_error + insert_common) / common_freq
-    )
+    f"Common words error freq: {common_error + insert_common} / {common_freq} = {(common_error + insert_common) / common_freq}"
 )
 print(
-    "Rare words error freq: {} / {} = {}".format(
-        rare_error + insert_rare, rare_freq, (rare_error + insert_rare) / rare_freq
-    )
+    f"Rare words error freq: {rare_error + insert_rare} / {rare_freq} = {(rare_error + insert_rare) / rare_freq}"
 )
-print("OOV words error freq: {} / {} = {}".format(oov_error, oov_freq, oov_error / max(oov_freq, 1)))
-print("WER estimate: {} / {} = {}".format(total_errors, total_words, WER))
 print(
-    "Insert error: {} / {} = {}".format(
-        insert_error - insert_rare, total_words, (insert_error - insert_rare) / total_words
-    )
+    f"OOV words error freq: {oov_error} / {oov_freq} = {oov_error / max(oov_freq, 1)}"
 )
-print("Insertion + OOV error {}".format((insert_error + oov_error - insert_rare) / total_words))
+print(f"WER estimate: {total_errors} / {total_words} = {WER}")
+print(
+    f"Insert error: {insert_error - insert_rare} / {total_words} = {(insert_error - insert_rare) / total_words}"
+)
+print(
+    f"Insertion + OOV error {(insert_error + oov_error - insert_rare) / total_words}"
+)
 print("=" * 89)

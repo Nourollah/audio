@@ -62,7 +62,7 @@ def get_mock_dataset(root_dir):
                             sample_rate,
                             data[_CONDITIONS[1]],
                             sample_rate,
-                            "p" + str(speaker_id),
+                            f"p{str(speaker_id)}",
                             f"{utterance_id:03d}",
                             source,
                             channel_id,

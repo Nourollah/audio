@@ -8,10 +8,9 @@ def extract_window(window, wave, f, frame_length, frame_shift, snip_edges):
     def first_sample_of_frame(frame, window_size, window_shift, snip_edges):
         if snip_edges:
             return frame * window_shift
-        else:
-            midpoint_of_frame = frame * window_shift + window_shift // 2
-            beginning_of_frame = midpoint_of_frame - window_size // 2
-            return beginning_of_frame
+        midpoint_of_frame = frame * window_shift + window_shift // 2
+        beginning_of_frame = midpoint_of_frame - window_size // 2
+        return beginning_of_frame
 
     sample_offset = 0
     num_samples = sample_offset + wave.size(0)
@@ -32,10 +31,7 @@ def extract_window(window, wave, f, frame_length, frame_shift, snip_edges):
         for s in range(frame_length):
             s_in_wave = s + wave_start
             while s_in_wave < 0 or s_in_wave >= wave_dim:
-                if s_in_wave < 0:
-                    s_in_wave = -s_in_wave - 1
-                else:
-                    s_in_wave = 2 * wave_dim - 1 - s_in_wave
+                s_in_wave = -s_in_wave - 1 if s_in_wave < 0 else 2 * wave_dim - 1 - s_in_wave
             window[f, s] = wave[s_in_wave]
 
 

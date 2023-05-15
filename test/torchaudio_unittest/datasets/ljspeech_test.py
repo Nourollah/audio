@@ -36,7 +36,7 @@ def get_mock_dataset(root_dir):
         for i, (transcript, normalized_transcript) in enumerate(zip(_TRANSCRIPTS, _NORMALIZED_TRANSCRIPT)):
             fileid = f"LJ001-{i:04d}"
             metadata_writer.writerow([fileid, transcript, normalized_transcript])
-            filename = fileid + ".wav"
+            filename = f"{fileid}.wav"
             path = os.path.join(archive_dir, filename)
             data = get_whitenoise(sample_rate=sample_rate, duration=1, n_channels=1, dtype="int16", seed=i)
             save_wav(path, data, sample_rate)

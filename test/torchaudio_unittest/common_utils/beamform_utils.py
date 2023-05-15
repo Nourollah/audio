@@ -24,11 +24,13 @@ def mvdr_weights_souden_numpy(psd_s, psd_n, reference_channel, diag_eps=1e-7, ep
     numerator = np.linalg.solve(psd_n, psd_s)  # psd_n.inv() @ psd_s
     numerator_trace = np.matrix.trace(numerator, axis1=1, axis2=2)
     ws = numerator / (numerator_trace[..., None, None] + eps)
-    if isinstance(reference_channel, int):
-        beamform_weights = ws[..., :, reference_channel]
-    else:
-        beamform_weights = np.einsum("...c,...c->...", ws, reference_channel[..., None, None, :])
-    return beamform_weights
+    return (
+        ws[..., :, reference_channel]
+        if isinstance(reference_channel, int)
+        else np.einsum(
+            "...c,...c->...", ws, reference_channel[..., None, None, :]
+        )
+    )
 
 
 def mvdr_weights_rtf_numpy(rtf, psd_n, reference_channel, diag_eps=1e-7, eps=1e-8):
@@ -51,8 +53,7 @@ def mvdr_weights_rtf_numpy(rtf, psd_n, reference_channel, diag_eps=1e-7, eps=1e-
 
 def rtf_evd_numpy(psd):
     _, v = np.linalg.eigh(psd)
-    rtf = v[..., -1]
-    return rtf
+    return v[..., -1]
 
 
 def rtf_power_numpy(psd_s, psd_n, reference_channel, n_iter, diagonal_loading=True, diag_eps=1e-7, eps=1e-8):
@@ -80,5 +81,4 @@ def rtf_power_numpy(psd_s, psd_n, reference_channel, n_iter, diagonal_loading=Tr
 
 
 def apply_beamforming_numpy(beamform_weights, specgram):
-    specgram_enhanced = np.einsum("...fc,...cft->...ft", beamform_weights.conj(), specgram)
-    return specgram_enhanced
+    return np.einsum("...fc,...cft->...ft", beamform_weights.conj(), specgram)

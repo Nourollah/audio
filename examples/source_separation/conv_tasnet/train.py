@@ -170,17 +170,11 @@ def _get_dataloader(dataset_type, dataset_dir, num_speakers, sample_rate, batch_
 
 def _write_header(log_path, args):
     rows = [
-        [
-            f"# torch: {torch.__version__}",
-        ],
-        [
-            f"# torchaudio: {torchaudio.__version__}",
-        ],
+        [f"# torch: {torch.__version__}"],
+        [f"# torchaudio: {torchaudio.__version__}"],
+        ["# arguments"],
     ]
-    rows.append(["# arguments"])
-    for key, item in vars(args).items():
-        rows.append([f"#   {key}: {item}"])
-
+    rows.extend([f"#   {key}: {item}"] for key, item in vars(args).items())
     dist_utils.write_csv_on_master(log_path, *rows)
 
 

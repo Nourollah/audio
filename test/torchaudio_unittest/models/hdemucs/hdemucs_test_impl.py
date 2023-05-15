@@ -12,8 +12,13 @@ def _get_hdemucs_model(sources: List[str], n_fft: int = 4096, depth: int = 6):
 
 
 def _get_inputs(sample_rate: int, device: torch.device, batch_size: int = 1, duration: int = 10, channels: int = 2):
-    sample = torch.rand(batch_size, channels, duration * sample_rate, dtype=torch.float32, device=device)
-    return sample
+    return torch.rand(
+        batch_size,
+        channels,
+        duration * sample_rate,
+        dtype=torch.float32,
+        device=device,
+    )
 
 
 SOURCE_OPTIONS = [
@@ -128,8 +133,7 @@ class CompareHDemucsOriginal(TorchaudioTestCase):
     def _get_original_model(self, sources: List[str], nfft: int, depth: int):
         from demucs import hdemucs as original
 
-        original = original.HDemucs(sources, nfft=nfft, depth=depth)
-        return original
+        return original.HDemucs(sources, nfft=nfft, depth=depth)
 
     def _assert_equal_models(self, factory_hdemucs, depth, nfft, sample_rate, sources):
         torch.random.manual_seed(0)

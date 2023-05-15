@@ -31,12 +31,16 @@ class L3DAS22(Dataset):
             raise ValueError(f"Expect subset to be one of ('train360', 'train100', 'dev', 'test'). Found {subset}.")
         for sub_dir in _SUBSETS[subset]:
             path = Path(root) / f"{_PREFIX}{sub_dir}" / "data"
-            files = [str(p) for p in path.glob("*_A.wav") if torchaudio.info(p).num_frames >= min_len]
-            if len(files) == 0:
+            if files := [
+                str(p)
+                for p in path.glob("*_A.wav")
+                if torchaudio.info(p).num_frames >= min_len
+            ]:
+                self._walker += files
+            else:
                 raise RuntimeError(
                     f"Directory {path} is not found. Please check if the zip file has been downloaded and extracted."
                 )
-            self._walker += files
 
     def __len__(self):
         return len(self._walker)

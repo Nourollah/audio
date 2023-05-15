@@ -195,10 +195,10 @@ def _skipIf(condition, reason, key):
     # In CI, default to fail, so as to prevent accidental skip.
     # In other env, default to skip
     var = f"TORCHAUDIO_TEST_ALLOW_SKIP_IF_{key}"
-    skip_allowed = _eval_env(var, default=not _IN_CI)
-    if skip_allowed:
+    if skip_allowed := _eval_env(var, default=not _IN_CI):
         return unittest.skip(reason)
-    return _fail(f"{reason} But the test cannot be skipped. (CI={_IN_CI}, {var}={skip_allowed}.)")
+    else:
+        return _fail(f"{reason} But the test cannot be skipped. (CI={_IN_CI}, {var}={skip_allowed}.)")
 
 
 def skipIfNoExec(cmd):

@@ -41,9 +41,7 @@ def _save_sample(dataset_dir, folder, song, source, sample_rate, seed):
     )
     save_wav(source_path, data, sample_rate)
 
-    sample = (data, sample_rate, 5 * sample_rate, song)
-
-    return sample
+    return data, sample_rate, 5 * sample_rate, song
 
 
 def _get_mocked_samples(dataset_dir, sample_rate):
@@ -108,7 +106,7 @@ class TestMusDB_HQ(TempDirMixin, TorchaudioTestCase):
 
     def _test_musdb_hq(self, dataset, data_samples, sources):
         num_samples = 0
-        for _, (data, sample_rate, num_frames, name) in enumerate(dataset):
+        for data, sample_rate, num_frames, name in dataset:
             self.assertEqual(data, self.extractSources(data_samples[name], sources))
             assert sample_rate == data_samples[name][0][1]
             assert num_frames == data_samples[name][0][2]

@@ -23,10 +23,7 @@ class GreedyCTCDecoder(torch.nn.Module):
         """
         best_path = torch.argmax(logits, dim=-1)  # [num_seq,]
         best_path = torch.unique_consecutive(best_path, dim=-1)
-        hypothesis = []
-        for i in best_path:
-            if i != self.blank:
-                hypothesis.append(self.labels[i])
+        hypothesis = [self.labels[i] for i in best_path if i != self.blank]
         return "".join(hypothesis)
 
 
@@ -66,16 +63,14 @@ def sample_speech(lang):
     if lang not in _FILES:
         raise NotImplementedError(f"Unexpected lang: {lang}")
     filename = _FILES[lang]
-    path = torchaudio.utils.download_asset(f"test-assets/{filename}")
-    return path
+    return torchaudio.utils.download_asset(f"test-assets/{filename}")
 
 
 @pytest.fixture
 def mixture_source(task):
     if task not in _MIXTURE_FILES:
         raise NotImplementedError(f"Unexpected task: {task}")
-    path = torchaudio.utils.download_asset(f"test-assets/{_MIXTURE_FILES[task]}")
-    return path
+    return torchaudio.utils.download_asset(f"test-assets/{_MIXTURE_FILES[task]}")
 
 
 @pytest.fixture

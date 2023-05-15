@@ -218,8 +218,7 @@ class _Attention(nn.Module):
         processed_attention_weights = self.location_layer(attention_weights_cat)
         energies = self.v(torch.tanh(processed_query + processed_attention_weights + processed_memory))
 
-        alignment = energies.squeeze(2)
-        return alignment
+        return energies.squeeze(2)
 
     def forward(
         self,
@@ -386,7 +385,7 @@ class _Encoder(nn.Module):
 
         self.lstm = nn.LSTM(
             encoder_embedding_dim,
-            int(encoder_embedding_dim / 2),
+            encoder_embedding_dim // 2,
             1,
             batch_first=True,
             bidirectional=True,
@@ -503,8 +502,12 @@ class _Decoder(nn.Module):
         n_batch = memory.size(0)
         dtype = memory.dtype
         device = memory.device
-        decoder_input = torch.zeros(n_batch, self.n_mels * self.n_frames_per_step, dtype=dtype, device=device)
-        return decoder_input
+        return torch.zeros(
+            n_batch,
+            self.n_mels * self.n_frames_per_step,
+            dtype=dtype,
+            device=device,
+        )
 
     def _initialize_decoder_states(
         self, memory: Tensor
@@ -772,8 +775,12 @@ class _Decoder(nn.Module):
         n_batch = memory.size(0)
         dtype = memory.dtype
         device = memory.device
-        decoder_input = torch.zeros(n_batch, self.n_mels * self.n_frames_per_step, dtype=dtype, device=device)
-        return decoder_input
+        return torch.zeros(
+            n_batch,
+            self.n_mels * self.n_frames_per_step,
+            dtype=dtype,
+            device=device,
+        )
 
     @torch.jit.export
     def infer(self, memory: Tensor, memory_lengths: Tensor) -> Tuple[Tensor, Tensor, Tensor, Tensor]:

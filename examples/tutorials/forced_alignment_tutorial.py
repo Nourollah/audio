@@ -260,7 +260,7 @@ for p in path:
 def plot_trellis_with_path(trellis, path):
     # To plot trellis with path, we take advantage of 'nan' value
     trellis_with_path = trellis.clone()
-    for _, p in enumerate(path):
+    for p in path:
         trellis_with_path[p.time_index, p.token_index] = float("nan")
     plt.imshow(trellis_with_path[1:, 1:].T, origin="lower")
 

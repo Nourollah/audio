@@ -18,7 +18,7 @@ def _extract_tar(from_path: str, to_path: Optional[str] = None, overwrite: bool 
             if file_.isfile():
                 files.append(file_path)
                 if os.path.exists(file_path):
-                    logging.info("{} already extracted.".format(file_path))
+                    logging.info(f"{file_path} already extracted.")
                     if not overwrite:
                         continue
             tar.extract(file_, to_path)
@@ -35,7 +35,7 @@ def _extract_zip(from_path: str, to_path: Optional[str] = None, overwrite: bool 
         for file_ in files:
             file_path = os.path.join(to_path, file_)
             if os.path.exists(file_path):
-                logging.info("{} already extracted.".format(file_path))
+                logging.info(f"{file_path} already extracted.")
                 if not overwrite:
                     continue
             zfile.extract(file_, to_path)
