@@ -606,9 +606,7 @@ with s.open():
         # Write audio chunk
         s.write_audio_chunk(0, WAVEFORM[t:t + SAMPLE_RATE, :])
 
-        # write 1 second of video chunk
-        frames = [_plot(spec) for spec in specs[i:i+frame_rate]]
-        if frames:
+        if frames := [_plot(spec) for spec in specs[i : i + frame_rate]]:
             s.write_video_chunk(1, torch.stack(frames))
         i += frame_rate
 

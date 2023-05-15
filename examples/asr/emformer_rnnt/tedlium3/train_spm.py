@@ -39,11 +39,9 @@ def _extract_train_text(tedlium_path, output_dir):
         if file.endswith(".stm"):
             file = os.path.join(stm_path, file)
             with open(file) as f:
-                for line in f.readlines():
+                for line in f:
                     talk_id, _, speaker_id, start_time, end_time, identifier, transcript = line.split(" ", 6)
-                    if transcript == "ignore_time_segment_in_scoring\n":
-                        continue
-                    else:
+                    if transcript != "ignore_time_segment_in_scoring\n":
                         transcript = transcript.replace("<unk>", "<garbage>").replace("\n", "")
                         transcripts.append(transcript)
 

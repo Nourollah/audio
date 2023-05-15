@@ -169,8 +169,7 @@ class UpsampleNetwork(nn.Module):
                 in_channels=1, out_channels=1, kernel_size=(1, scale * 2 + 1), padding=(0, scale), bias=False
             )
             torch.nn.init.constant_(conv.weight, 1.0 / (scale * 2 + 1))
-            up_layers.append(stretch)
-            up_layers.append(conv)
+            up_layers.extend((stretch, conv))
         self.upsample_layers = nn.Sequential(*up_layers)
 
     def forward(self, specgram: Tensor) -> Tuple[Tensor, Tensor]:

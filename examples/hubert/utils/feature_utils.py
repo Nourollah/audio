@@ -63,8 +63,7 @@ def extract_feature_mfcc(
     deltas = torchaudio.functional.compute_deltas(mfccs)
     ddeltas = torchaudio.functional.compute_deltas(deltas)
     concat = torch.cat([mfccs, deltas, ddeltas], dim=0)
-    feat = concat.transpose(0, 1)  # (time, freq)
-    return feat
+    return concat.transpose(0, 1)
 
 
 def extract_feature_hubert(

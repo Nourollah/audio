@@ -274,7 +274,7 @@ fig, [ax1, ax2] = plt.subplots(2, 1, figsize=(16, 9))
 ax1.imshow(spec[0].cpu().detach(), origin="lower", aspect="auto")
 ax2.plot(waveforms[0].cpu().detach())
 
-IPython.display.Audio(waveforms[0:1].cpu(), rate=vocoder.sample_rate)
+IPython.display.Audio(waveforms[:1].cpu(), rate=vocoder.sample_rate)
 
 
 ######################################################################
@@ -304,7 +304,7 @@ fig, [ax1, ax2] = plt.subplots(2, 1, figsize=(16, 9))
 ax1.imshow(spec[0].cpu().detach(), origin="lower", aspect="auto")
 ax2.plot(waveforms[0].cpu().detach())
 
-IPython.display.Audio(waveforms[0:1].cpu(), rate=vocoder.sample_rate)
+IPython.display.Audio(waveforms[:1].cpu(), rate=vocoder.sample_rate)
 
 
 ######################################################################
@@ -343,4 +343,4 @@ fig, [ax1, ax2] = plt.subplots(2, 1, figsize=(16, 9))
 ax1.imshow(spec[0].cpu().detach(), origin="lower", aspect="auto")
 ax2.plot(waveforms[0].cpu().detach())
 
-IPython.display.Audio(waveforms[0:1].cpu(), rate=22050)
+IPython.display.Audio(waveforms[:1].cpu(), rate=22050)

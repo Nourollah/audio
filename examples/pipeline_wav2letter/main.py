@@ -372,9 +372,9 @@ def main(rank, args):
         "hop_length": args.hop_length,
     }
 
-    sample_rate_original = 16000
-
     if args.type == "mfcc":
+        sample_rate_original = 16000
+
         transforms = torch.nn.Sequential(
             torchaudio.transforms.MFCC(
                 sample_rate=sample_rate_original,

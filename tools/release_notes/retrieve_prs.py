@@ -81,27 +81,23 @@ def gh_labels(pr_number):
     }}
     """
     query = run_query(query)
-    pr = query["data"]["repository"]["pullRequest"]
-    if not pr:
+    if pr := query["data"]["repository"]["pullRequest"]:
+        return [edge["node"]["name"] for edge in pr["labels"]["edges"]]
+    else:
         # to account for unrecognized PR numbers from commits originating from fb internal
         return []
-    edges = pr["labels"]["edges"]
-    return [edge["node"]["name"] for edge in edges]
 
 
 def get_features(commit_hash):
     title = commit_title(commit_hash)
     pr_number = parse_pr_number(title)
-    labels = []
-    if pr_number is not None:
-        labels = gh_labels(pr_number)
+    labels = gh_labels(pr_number) if pr_number is not None else []
     return Features(title, pr_number, labels)
 
 
 def get_merge_base(base_version, new_version):
     cmd = ["git", "merge-base", f"{base_version}", f"{new_version}"]
-    merge_base = _run_cmd(cmd)
-    return merge_base
+    return _run_cmd(cmd)
 
 
 def get_commits_between(base_version, new_version):

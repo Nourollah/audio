@@ -104,15 +104,14 @@ def split_process_dataset(
         train_dataset (`torch.utils.data.Dataset`): The training set.
         val_dataset (`torch.utils.data.Dataset`): The validation set.
     """
-    if dataset == "ljspeech":
-        data = LJSPEECH(root=file_path, download=False)
-
-        val_length = int(len(data) * val_ratio)
-        lengths = [len(data) - val_length, val_length]
-        train_dataset, val_dataset = random_split(data, lengths)
-    else:
+    if dataset != "ljspeech":
         raise ValueError(f"Expected datasets: `ljspeech`, but found {dataset}")
 
+    data = LJSPEECH(root=file_path, download=False)
+
+    val_length = int(len(data) * val_ratio)
+    lengths = [len(data) - val_length, val_length]
+    train_dataset, val_dataset = random_split(data, lengths)
     train_dataset = Processed(train_dataset, transforms, text_preprocessor)
     val_dataset = Processed(val_dataset, transforms, text_preprocessor)
 
@@ -154,7 +153,7 @@ def text_mel_collate_fn(
 
     # Right zero-pad mel-spec
     num_mels = batch[0][1].size(0)
-    max_target_len = max([x[1].size(1) for x in batch])
+    max_target_len = max(x[1].size(1) for x in batch)
     if max_target_len % n_frames_per_step != 0:
         max_target_len += n_frames_per_step - max_target_len % n_frames_per_step
         assert max_target_len % n_frames_per_step == 0

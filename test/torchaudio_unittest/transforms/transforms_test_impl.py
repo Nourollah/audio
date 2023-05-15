@@ -234,11 +234,7 @@ class TransformsTestBase(TestBaseMixin):
         times = torch.arange(0, 5, 1.0 / sample_rate)
         waveform = torch.cos(2 * math.pi * freq * times).unsqueeze(0).to(self.device, self.dtype)
 
-        if use_lengths:
-            lengths = torch.tensor([waveform.size(1)])
-        else:
-            lengths = None
-
+        lengths = torch.tensor([waveform.size(1)]) if use_lengths else None
         speed = T.Speed(sample_rate, factor).to(self.device, self.dtype)
         output, output_lengths = speed(waveform, lengths)
 

@@ -15,8 +15,7 @@ def oscillator_bank(
     freqs = frequencies * pi2 / sample_rate % pi2
     phases = np.cumsum(freqs, axis=time_axis, dtype=freqs.dtype)
 
-    waveform = amplitudes * np.sin(phases)
-    return waveform
+    return amplitudes * np.sin(phases)
 
 
 def sinc_ir(cutoff, window_size: int = 513, high_pass: bool = False):

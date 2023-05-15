@@ -92,9 +92,8 @@ class MUSDB_HQ(Dataset):
                 raise ValueError(f"expected sample rate {_SAMPLE_RATE}, but got {sr}")
             if num_frames is None:
                 num_frames = wav.shape[-1]
-            else:
-                if wav.shape[-1] != num_frames:
-                    raise ValueError("num_frames do not match across sources")
+            elif wav.shape[-1] != num_frames:
+                raise ValueError("num_frames do not match across sources")
             wavs.append(wav)
 
         stacked = torch.stack(wavs)

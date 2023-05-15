@@ -30,9 +30,7 @@ def _parse_args():
 
 
 def _removeprefix(s, prefix):
-    if s.startswith(prefix):
-        return s[len(prefix) :]
-    return s
+    return s[len(prefix) :] if s.startswith(prefix) else s
 
 
 def _load(input_file):

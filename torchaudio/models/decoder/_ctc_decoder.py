@@ -63,10 +63,7 @@ def _construct_trie(tokens_dict, word_dict, lexicon, lm, silence):
 
 
 def _get_word_dict(lexicon, lm, lm_dict, tokens_dict, unk_word):
-    word_dict = None
-    if lm_dict is not None:
-        word_dict = _Dictionary(lm_dict)
-
+    word_dict = _Dictionary(lm_dict) if lm_dict is not None else None
     if lexicon and word_dict is None:
         word_dict = _create_word_dict(lexicon)
     elif not lexicon and word_dict is None and type(lm) == str:
@@ -474,11 +471,7 @@ def download_pretrained_files(model: str) -> _PretrainedFiles:
     files = _get_filenames(model)
     lexicon_file = download_asset(files.lexicon)
     tokens_file = download_asset(files.tokens)
-    if files.lm is not None:
-        lm_file = download_asset(files.lm)
-    else:
-        lm_file = None
-
+    lm_file = download_asset(files.lm) if files.lm is not None else None
     return _PretrainedFiles(
         lexicon=lexicon_file,
         tokens=tokens_file,

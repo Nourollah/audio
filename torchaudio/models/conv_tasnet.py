@@ -59,10 +59,7 @@ class ConvBlock(torch.nn.Module):
 
     def forward(self, input: torch.Tensor) -> Tuple[Optional[torch.Tensor], torch.Tensor]:
         feature = self.conv_layers(input)
-        if self.res_out is None:
-            residual = None
-        else:
-            residual = self.res_out(feature)
+        residual = None if self.res_out is None else self.res_out(feature)
         skip_out = self.skip_out(feature)
         return residual, skip_out
 

@@ -37,28 +37,6 @@ def get_mock_dataset(root_dir, return_punc=False):
         "...ELLIPSIS  IH2 L IH1 P S IH0 S",
     ]
 
-    punc_outputs = [
-        "!",
-        '"',
-        "#",
-        "%",
-        "&",
-        "'",
-        "(",
-        ")",
-        "+",
-        ",",
-        "--",
-        "!",
-        "/",
-        ":",
-        ";",
-        "?",
-        "{",
-        "}",
-        "...",
-    ]
-
     words = [
         "3-D  TH R IY1 D IY2",
         "'BOUT  B AW1 T",
@@ -151,6 +129,28 @@ def get_mock_dataset(root_dir, return_punc=False):
     mocked_data = []
 
     if return_punc:
+        punc_outputs = [
+            "!",
+            '"',
+            "#",
+            "%",
+            "&",
+            "'",
+            "(",
+            ")",
+            "+",
+            ",",
+            "--",
+            "!",
+            "/",
+            ":",
+            ";",
+            "?",
+            "{",
+            "}",
+            "...",
+        ]
+
         for i, ent in enumerate(puncs):
             _, phones = ent.split("  ")
             mocked_data.append((punc_outputs[i], phones.split(" ")))

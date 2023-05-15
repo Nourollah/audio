@@ -149,5 +149,6 @@ class Trainer:
         dist.all_reduce(total_sdri, dist.ReduceOp.SUM)
 
         num_samples = len(loader.dataset)
-        metric = Metric(total_si_snri.item() / num_samples, total_sdri.item() / num_samples)
-        return metric
+        return Metric(
+            total_si_snri.item() / num_samples, total_sdri.item() / num_samples
+        )

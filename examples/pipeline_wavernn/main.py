@@ -194,8 +194,7 @@ def parse_args():
         help="if True, spectrogram is normalized",
     )
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch):
@@ -284,7 +283,7 @@ def main(args):
 
     devices = ["cuda" if torch.cuda.is_available() else "cpu"]
 
-    logging.info("Start time: {}".format(str(datetime.now())))
+    logging.info(f"Start time: {str(datetime.now())}")
 
     melkwargs = {
         "n_fft": args.n_fft,

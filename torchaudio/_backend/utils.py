@@ -70,8 +70,8 @@ def _map_encoding(encoding: str) -> str:
 
 def _get_bits_per_sample(encoding: str, bits_per_sample: int) -> str:
     if m := re.search(r"PCM_\w(\d+)\w*", encoding):
-        return int(m.group(1))
-    elif encoding in ["PCM_ALAW", "PCM_MULAW"]:
+        return int(m[1])
+    elif encoding in {"PCM_ALAW", "PCM_MULAW"}:
         return 8
     return bits_per_sample
 
@@ -149,12 +149,10 @@ class SoXBackend(Backend):
                 "SoX backend does not support reading from file-like objects. ",
                 "Please use an alternative backend that does support reading from file-like objects, e.g. FFmpeg.",
             )
+        if sinfo := torch.ops.torchaudio.sox_io_get_info(uri, format):
+            return AudioMetaData(*sinfo)
         else:
-            sinfo = torch.ops.torchaudio.sox_io_get_info(uri, format)
-            if sinfo:
-                return AudioMetaData(*sinfo)
-            else:
-                raise RuntimeError(f"Failed to fetch metadata for {uri}.")
+            raise RuntimeError(f"Failed to fetch metadata for {uri}.")
 
     @staticmethod
     def load(
@@ -171,13 +169,12 @@ class SoXBackend(Backend):
                 "SoX backend does not support loading from file-like objects. ",
                 "Please use an alternative backend that does support loading from file-like objects, e.g. FFmpeg.",
             )
-        else:
-            ret = torch.ops.torchaudio.sox_io_load_audio_file(
-                uri, frame_offset, num_frames, normalize, channels_first, format
-            )
-            if not ret:
-                raise RuntimeError(f"Failed to load audio from {uri}.")
+        if ret := torch.ops.torchaudio.sox_io_load_audio_file(
+            uri, frame_offset, num_frames, normalize, channels_first, format
+        ):
             return ret
+        else:
+            raise RuntimeError(f"Failed to load audio from {uri}.")
 
     @staticmethod
     def save(

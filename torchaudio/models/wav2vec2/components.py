@@ -950,7 +950,7 @@ def _compute_mask_indices(
 
         mask_idcs.append(torch.unique(mask_idc[mask_idc < sz]))
 
-    min_len = min([len(m) for m in mask_idcs])
+    min_len = min(len(m) for m in mask_idcs)
     for i, mask_idc in enumerate(mask_idcs):
         if len(mask_idc) > min_len:
             mask_idc = mask_idc[torch.randperm(len(mask_idc))[:min_len].long()]
@@ -969,8 +969,12 @@ def _get_padding_mask(input: Tensor, lengths: Tensor) -> Tensor:
         (Tensor): The padding mask.
     """
     batch_size, max_len, _ = input.shape
-    mask = torch.arange(max_len, device=lengths.device).expand(batch_size, max_len) >= lengths[:, None]
-    return mask
+    return (
+        torch.arange(max_len, device=lengths.device).expand(
+            batch_size, max_len
+        )
+        >= lengths[:, None]
+    )
 
 
 class MaskGenerator(Module):
@@ -1101,8 +1105,7 @@ def _compute_logits(
     logits /= logit_temp
     if neg_is_pos.any():
         logits[1:][neg_is_pos] = float("-inf")
-    logits = logits.transpose(0, 1)  # (num_x, num_cls+1)
-    return logits
+    return logits.transpose(0, 1)
 
 
 class LogitGenerator(Module):
@@ -1163,8 +1166,7 @@ class GradMultiply(torch.autograd.Function):
     @staticmethod
     def forward(ctx, x, scale):
         ctx.scale = scale
-        res = x.new(x)
-        return res
+        return x.new(x)
 
     @staticmethod
     def backward(ctx, grad):

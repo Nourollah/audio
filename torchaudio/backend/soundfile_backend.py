@@ -239,53 +239,52 @@ def load(
 def _get_subtype_for_wav(dtype: torch.dtype, encoding: str, bits_per_sample: int):
     if not encoding:
         if not bits_per_sample:
-            subtype = {
+            if subtype := {
                 torch.uint8: "PCM_U8",
                 torch.int16: "PCM_16",
                 torch.int32: "PCM_32",
                 torch.float32: "FLOAT",
                 torch.float64: "DOUBLE",
-            }.get(dtype)
-            if not subtype:
+            }.get(dtype):
+                return subtype
+            else:
                 raise ValueError(f"Unsupported dtype for wav: {dtype}")
-            return subtype
-        if bits_per_sample == 8:
-            return "PCM_U8"
-        return f"PCM_{bits_per_sample}"
-    if encoding == "PCM_S":
-        if not bits_per_sample:
-            return "PCM_32"
-        if bits_per_sample == 8:
-            raise ValueError("wav does not support 8-bit signed PCM encoding.")
-        return f"PCM_{bits_per_sample}"
-    if encoding == "PCM_U":
-        if bits_per_sample in (None, 8):
-            return "PCM_U8"
-        raise ValueError("wav only supports 8-bit unsigned PCM encoding.")
-    if encoding == "PCM_F":
-        if bits_per_sample in (None, 32):
+        return "PCM_U8" if bits_per_sample == 8 else f"PCM_{bits_per_sample}"
+    if encoding == "ALAW":
+        if bits_per_sample in {None, 8}:
+            return "ALAW"
+        raise ValueError("wav only supports 8-bit a-law encoding.")
+    elif encoding == "PCM_F":
+        if bits_per_sample in {None, 32}:
             return "FLOAT"
         if bits_per_sample == 64:
             return "DOUBLE"
         raise ValueError("wav only supports 32/64-bit float PCM encoding.")
-    if encoding == "ULAW":
-        if bits_per_sample in (None, 8):
+    elif encoding == "PCM_S":
+        if not bits_per_sample:
+            return "PCM_32"
+        if bits_per_sample == 8:
+            raise ValueError("wav does not support 8-bit signed PCM encoding.")
+        else:
+            return f"PCM_{bits_per_sample}"
+    elif encoding == "PCM_U":
+        if bits_per_sample in {None, 8}:
+            return "PCM_U8"
+        raise ValueError("wav only supports 8-bit unsigned PCM encoding.")
+    elif encoding == "ULAW":
+        if bits_per_sample in {None, 8}:
             return "ULAW"
         raise ValueError("wav only supports 8-bit mu-law encoding.")
-    if encoding == "ALAW":
-        if bits_per_sample in (None, 8):
-            return "ALAW"
-        raise ValueError("wav only supports 8-bit a-law encoding.")
     raise ValueError(f"wav does not support {encoding}.")
 
 
 def _get_subtype_for_sphere(encoding: str, bits_per_sample: int):
-    if encoding in (None, "PCM_S"):
+    if encoding in {None, "PCM_S"}:
         return f"PCM_{bits_per_sample}" if bits_per_sample else "PCM_32"
-    if encoding in ("PCM_U", "PCM_F"):
+    if encoding in {"PCM_U", "PCM_F"}:
         raise ValueError(f"sph does not support {encoding} encoding.")
     if encoding == "ULAW":
-        if bits_per_sample in (None, 8):
+        if bits_per_sample in {None, 8}:
             return "ULAW"
         raise ValueError("sph only supports 8-bit for mu-law encoding.")
     if encoding == "ALAW":
@@ -304,13 +303,13 @@ def _get_subtype(dtype: torch.dtype, format: str, encoding: str, bits_per_sample
         if bits_per_sample > 24:
             raise ValueError("flac does not support bits_per_sample > 24.")
         return "PCM_S8" if bits_per_sample == 8 else f"PCM_{bits_per_sample}"
-    if format in ("ogg", "vorbis"):
+    if format in {"ogg", "vorbis"}:
         if encoding or bits_per_sample:
             raise ValueError("ogg/vorbis does not support encoding/bits_per_sample.")
         return "VORBIS"
     if format == "sph":
         return _get_subtype_for_sphere(encoding, bits_per_sample)
-    if format in ("nis", "nist"):
+    if format in {"nis", "nist"}:
         return "PCM_16"
     raise ValueError(f"Unsupported format: {format}")
 
@@ -429,7 +428,7 @@ def save(
             raise RuntimeError("`format` is required when saving to file object.")
         ext = format.lower()
     else:
-        ext = str(filepath).split(".")[-1].lower()
+        ext = filepath.split(".")[-1].lower()
 
     if bits_per_sample not in (None, 8, 16, 24, 32, 64):
         raise ValueError("Invalid bits_per_sample.")

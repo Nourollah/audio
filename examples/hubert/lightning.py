@@ -292,13 +292,14 @@ class HuBERTPreTrainModule(LightningModule):
         )
         sampler = DistributedBatchSampler(sampler, shuffle=True)
         sampler.set_epoch(self.current_epoch)
-        dataloader = DataLoader(
+        return DataLoader(
             dataset,
             batch_sampler=sampler,
-            collate_fn=CollateFnHubert(feature_type=self.feature_type, pad=False, rand_crop=True),
+            collate_fn=CollateFnHubert(
+                feature_type=self.feature_type, pad=False, rand_crop=True
+            ),
             num_workers=10,
         )
-        return dataloader
 
     def val_dataloader(self):
         dataset = HuBERTDataSet(self.dataset_path, self.dataset, "valid")
@@ -310,13 +311,14 @@ class HuBERTPreTrainModule(LightningModule):
             max_len=250000,
             shuffle=False,
         )
-        dataloader = DataLoader(
+        return DataLoader(
             dataset,
             batch_sampler=sampler,
-            collate_fn=CollateFnHubert(feature_type=self.feature_type, pad=False, rand_crop=True),
+            collate_fn=CollateFnHubert(
+                feature_type=self.feature_type, pad=False, rand_crop=True
+            ),
             num_workers=10,
         )
-        return dataloader
 
 
 class HuBERTFineTuneModule(LightningModule):
@@ -413,10 +415,11 @@ class HuBERTFineTuneModule(LightningModule):
         # load pretrain model from checkpoint
         state_dict = torch.load(checkpoint, map_location=torch.device("cpu"))
         state_dict = state_dict["state_dict"]
-        s = {}
-        for k in state_dict:
-            if "model." in k:
-                s[k.replace("model.", "")] = state_dict[k]
+        s = {
+            k.replace("model.", ""): state_dict[k]
+            for k in state_dict
+            if "model." in k
+        }
         self.model.load_state_dict(s)
 
     def _step(self, batch: Batch_FineTune, batch_idx, step_type):
@@ -517,13 +520,12 @@ class HuBERTFineTuneModule(LightningModule):
         )
         sampler = DistributedBatchSampler(sampler, shuffle=True)
         sampler.set_epoch(self.global_step)
-        dataloader = DataLoader(
+        return DataLoader(
             dataset,
             batch_sampler=sampler,
             collate_fn=CollateFnLibriLightLimited(),
             num_workers=10,
         )
-        return dataloader
 
     def val_dataloader(self):
         dataset = torchaudio.datasets.LIBRISPEECH(self.dataset_path, "dev-other")
@@ -531,10 +533,9 @@ class HuBERTFineTuneModule(LightningModule):
         sampler = BucketizeBatchSampler(
             lengths, num_buckets=100, max_token_count=self.seconds_per_batch * 16000, shuffle=False
         )
-        dataloader = DataLoader(
+        return DataLoader(
             dataset,
             batch_sampler=sampler,
             collate_fn=CollateFnLibriLightLimited(),
             num_workers=10,
         )
-        return dataloader

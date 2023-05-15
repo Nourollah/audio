@@ -210,10 +210,10 @@ class ConvTasNetModule(LightningModule):
         phase_type: str,
     ) -> Dict[str, torch.Tensor]:
         metrics_dict = getattr(self, f"{phase_type}_metrics")
-        metrics_result = {}
-        for name, metric in metrics_dict.items():
-            metrics_result[f"Metrics/{phase_type}/{name}"] = metric(pred, label, inputs, mask)
-        return metrics_result
+        return {
+            f"Metrics/{phase_type}/{name}": metric(pred, label, inputs, mask)
+            for name, metric in metrics_dict.items()
+        }
 
     def train_dataloader(self):
         """Training dataloader"""
@@ -235,7 +235,7 @@ def _get_model(
     msk_num_stacks=3,
     msk_activate="relu",
 ):
-    model = torchaudio.models.ConvTasNet(
+    return torchaudio.models.ConvTasNet(
         num_sources=num_sources,
         enc_kernel_size=enc_kernel_size,
         enc_num_feats=enc_num_feats,
@@ -246,7 +246,6 @@ def _get_model(
         msk_num_stacks=msk_num_stacks,
         msk_activate=msk_activate,
     )
-    return model
 
 
 def _get_dataloader(

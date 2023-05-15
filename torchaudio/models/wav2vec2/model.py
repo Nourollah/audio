@@ -694,8 +694,6 @@ def _init_hubert_pretrain_model(module):
         torch.nn.init.constant_(module.out_proj.bias, 0.0)
     elif isinstance(module, components.Transformer):
         module.apply(components._init_transformer_params)
-    else:
-        pass
 
 
 def hubert_pretrain_model(

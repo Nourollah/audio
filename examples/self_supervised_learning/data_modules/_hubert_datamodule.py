@@ -38,13 +38,14 @@ class HuBERTDataModule(LightningDataModule):
         )
         sampler = DistributedBatchSampler(sampler, shuffle=self.train_shuffle)
         sampler.set_epoch(self.trainer.current_epoch)
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_sampler=sampler,
-            collate_fn=CollateFnHubert(feature_type=self.feature_type, pad=False, rand_crop=True),
+            collate_fn=CollateFnHubert(
+                feature_type=self.feature_type, pad=False, rand_crop=True
+            ),
             num_workers=self.num_workers,
         )
-        return dataloader
 
     def val_dataloader(self):
         dataset = self.hubert_cls(self.dataset_path, self.dataset, "valid")
@@ -56,10 +57,11 @@ class HuBERTDataModule(LightningDataModule):
             max_len=250000,
             shuffle=False,
         )
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_sampler=sampler,
-            collate_fn=CollateFnHubert(feature_type=self.feature_type, pad=False, rand_crop=True),
+            collate_fn=CollateFnHubert(
+                feature_type=self.feature_type, pad=False, rand_crop=True
+            ),
             num_workers=self.num_workers,
         )
-        return dataloader

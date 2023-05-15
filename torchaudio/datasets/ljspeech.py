@@ -60,12 +60,11 @@ class LJSPEECH(Dataset):
                     checksum = _RELEASE_CONFIGS["release1"]["checksum"]
                     download_url_to_file(url, archive, hash_prefix=checksum)
                 _extract_tar(archive)
-        else:
-            if not os.path.exists(self._path):
-                raise RuntimeError(
-                    f"The path {self._path} doesn't exist. "
-                    "Please check the ``root`` path or set `download=True` to download it"
-                )
+        elif not os.path.exists(self._path):
+            raise RuntimeError(
+                f"The path {self._path} doesn't exist. "
+                "Please check the ``root`` path or set `download=True` to download it"
+            )
 
         with open(self._metadata_path, "r", newline="") as metadata:
             flist = csv.reader(metadata, delimiter="|", quoting=csv.QUOTE_NONE)
@@ -91,7 +90,7 @@ class LJSPEECH(Dataset):
         """
         line = self._flist[n]
         fileid, transcript, normalized_transcript = line
-        fileid_audio = self._path / (fileid + ".wav")
+        fileid_audio = self._path / f"{fileid}.wav"
 
         # Load audio
         waveform, sample_rate = torchaudio.load(fileid_audio)

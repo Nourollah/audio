@@ -72,7 +72,7 @@ class BucketizeBatchSampler(BatchSampler):
             ), "The  ``max_token_count`` must be greater than or equal to the maximum value of ``lengths``."
         # Filter out samples which are outside the bounds of [min_len, max_len]
         filtered_length_idx = [(length, i) for i, length in enumerate(lengths) if min_len <= length <= max_len]
-        if len(filtered_length_idx) == 0:
+        if not filtered_length_idx:
             raise AssertionError("``lengths`` cannot be empty after filtering.")
         sorted_filtered_length_idx = sorted(filtered_length_idx, key=lambda x: x[0])
         self.lengths = [e[0] for e in sorted_filtered_length_idx]
@@ -111,7 +111,7 @@ class BucketizeBatchSampler(BatchSampler):
                 buckets[bucket_id] = [i]
         for k in buckets:
             buckets[k] = torch.as_tensor(buckets[k], dtype=torch.int)
-        buckets = {k: v for k, v in sorted(buckets.items())}
+        buckets = dict(sorted(buckets.items()))
         return buckets
 
     def _update_iter_list(self) -> None:
@@ -343,9 +343,6 @@ def _crop_audio_label(
         (Tuple(Tensor, (Tensor, optional), Tensor)): Returns the Tensors for the waveform,
             label, and the waveform length.
     """
-    kernel_size = 25
-    stride = 20
-    sample_rate = 16  # 16 per millisecond
     frame_offset = 0
     waveform = waveform[0]
     if waveform.size(0) > num_frames and rand_crop:
@@ -355,6 +352,9 @@ def _crop_audio_label(
         num_frames = waveform.size(0)
 
     if label is not None:
+        kernel_size = 25
+        stride = 20
+        sample_rate = 16  # 16 per millisecond
         label_offset = max(
             math.floor((frame_offset - kernel_size * sample_rate) / (stride * sample_rate)) + 1,
             0,
@@ -405,9 +405,9 @@ class CollateFnHubert:
                 "label": Tuple of label Tensor with dimensions `(batch, seq)`.
         """
         if self.pad:
-            num_frames = max([sample[0].shape[1] for sample in batch])
+            num_frames = max(sample[0].shape[1] for sample in batch)
         else:
-            num_frames = min([sample[0].shape[1] for sample in batch])
+            num_frames = min(sample[0].shape[1] for sample in batch)
         waveforms, labels, lengths = [], [], []
         for sample in batch:
             waveform, label, length = sample
@@ -422,10 +422,11 @@ class CollateFnHubert:
         # make sure the shapes are the same if not apply zero-padding
         if not self.pad:
             assert all(
-                [waveform.shape[0] == waveforms[0].shape[0] for waveform in waveforms]
+                waveform.shape[0] == waveforms[0].shape[0]
+                for waveform in waveforms
             ), "The dimensions of the waveforms should be identical in the same batch."
             assert all(
-                [label.shape[0] == labels[0].shape[0] for label in labels]
+                label.shape[0] == labels[0].shape[0] for label in labels
             ), "The dimensions of the labels should be identical in the same batch."
         waveforms = torch.nn.utils.rnn.pad_sequence(waveforms, batch_first=True)
         labels = torch.nn.utils.rnn.pad_sequence(labels, batch_first=True)
@@ -468,9 +469,9 @@ class CollateFnWav2Vec2:
                 "label": None
         """
         if self.pad:
-            num_frames = max([sample[0].shape[1] for sample in batch])
+            num_frames = max(sample[0].shape[1] for sample in batch)
         else:
-            num_frames = min([sample[0].shape[1] for sample in batch])
+            num_frames = min(sample[0].shape[1] for sample in batch)
         waveforms, lengths = [], []
         for sample in batch:
             waveform, length = sample
@@ -480,7 +481,8 @@ class CollateFnWav2Vec2:
         # make sure the shapes are the same if not apply zero-padding
         if not self.pad:
             assert all(
-                [waveform.shape[0] == waveforms[0].shape[0] for waveform in waveforms]
+                waveform.shape[0] == waveforms[0].shape[0]
+                for waveform in waveforms
             ), "The dimensions of the waveforms should be identical in the same batch."
         waveforms = torch.nn.utils.rnn.pad_sequence(waveforms, batch_first=True)
         lengths = torch.tensor(lengths)

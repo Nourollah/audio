@@ -168,9 +168,5 @@ class WaveRNNInferenceWrapper(torch.nn.Module):
             output = normalized_waveform_to_bits(output, self.wavernn_model.n_bits)
             output = torchaudio.functional.mu_law_decoding(output, self.wavernn_model.n_classes)
 
-        if batched:
-            output = _xfade_and_unfold(output, overlap)
-        else:
-            output = output[0]
-
+        output = _xfade_and_unfold(output, overlap) if batched else output[0]
         return output

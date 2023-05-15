@@ -267,10 +267,7 @@ class Autograd(TestBaseMixin):
     )
     def test_psd(self, use_mask):
         specgram = torch.rand(4, 10, 5, dtype=torch.cfloat)
-        if use_mask:
-            mask = torch.rand(10, 5)
-        else:
-            mask = None
+        mask = torch.rand(10, 5) if use_mask else None
         self.assert_grad(F.psd, (specgram, mask))
 
     def test_mvdr_weights_souden(self):

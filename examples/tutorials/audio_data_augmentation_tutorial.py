@@ -261,7 +261,7 @@ Audio(noise, rate=sample_rate)
 # ~~~~~~~~~~
 #
 
-snr_db, noisy_speech = snr_dbs[0], noisy_speeches[0:1]
+snr_db, noisy_speech = snr_dbs[0], noisy_speeches[:1]
 plot_waveform(noisy_speech, sample_rate, title=f"SNR: {snr_db} [dB]")
 plot_specgram(noisy_speech, sample_rate, title=f"SNR: {snr_db} [dB]")
 Audio(noisy_speech, rate=sample_rate)

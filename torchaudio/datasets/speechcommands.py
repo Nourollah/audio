@@ -81,14 +81,8 @@ class SPEECHCOMMANDS(Dataset):
         if subset is not None and subset not in ["training", "validation", "testing"]:
             raise ValueError("When `subset` is not None, it must be one of ['training', 'validation', 'testing'].")
 
-        if url in [
-            "speech_commands_v0.01",
-            "speech_commands_v0.02",
-        ]:
-            base_url = "http://download.tensorflow.org/data/"
-            ext_archive = ".tar.gz"
-
-            url = os.path.join(base_url, url + ext_archive)
+        if url in {"speech_commands_v0.01", "speech_commands_v0.02"}:
+            url = os.path.join("http://download.tensorflow.org/data/", f"{url}.tar.gz")
 
         # Get string representation of 'root' in case Path object is passed
         root = os.fspath(root)
@@ -108,12 +102,11 @@ class SPEECHCOMMANDS(Dataset):
                     checksum = _CHECKSUMS.get(url, None)
                     download_url_to_file(url, archive, hash_prefix=checksum)
                 _extract_tar(archive, self._path)
-        else:
-            if not os.path.exists(self._path):
-                raise RuntimeError(
-                    f"The path {self._path} doesn't exist. "
-                    "Please check the ``root`` path or set `download=True` to download it"
-                )
+        elif not os.path.exists(self._path):
+            raise RuntimeError(
+                f"The path {self._path} doesn't exist. "
+                "Please check the ``root`` path or set `download=True` to download it"
+            )
 
         if subset == "validation":
             self._walker = _load_list(self._path, "validation_list.txt")

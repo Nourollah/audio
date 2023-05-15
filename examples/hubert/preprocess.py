@@ -66,8 +66,7 @@ def _parse_args():
         type=float,
         help="The percent of data for KMeans clustering. If negative, use all data. (Default: -1)",
     )
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main(args):
@@ -86,11 +85,7 @@ def main(args):
     km_dir = data_dir / "km_model"
     label_dir = data_dir / "label"
 
-    if args.use_gpu:
-        device = torch.device("cuda")
-    else:
-        device = torch.device("cpu")
-
+    device = torch.device("cuda") if args.use_gpu else torch.device("cpu")
     # Create file lists for training and validation (optional)
     create_tsv(args.root_dir, tsv_dir)
 

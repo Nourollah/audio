@@ -13,15 +13,13 @@ class CTCDecoderTest(TempDirMixin, TorchaudioTestCase):
         from .ctc_decoder_utils import CustomKenLM
 
         dict_file = get_asset_path("decoder/lexicon.txt")
-        custom_lm = CustomKenLM(kenlm_file, dict_file)
-        return custom_lm
+        return CustomKenLM(kenlm_file, dict_file)
 
     def _get_biased_nnlm(self, dict_file, keyword):
         from .ctc_decoder_utils import BiasedLM, CustomBiasedLM
 
         model = BiasedLM(dict_file, keyword)
-        biased_lm = CustomBiasedLM(model, dict_file)
-        return biased_lm
+        return CustomBiasedLM(model, dict_file)
 
     def _get_decoder(self, tokens=None, lm=None, use_lexicon=True, **kwargs):
         from torchaudio.models.decoder import ctc_decoder
@@ -40,9 +38,7 @@ class CTCDecoderTest(TempDirMixin, TorchaudioTestCase):
     def _get_emissions(self):
         B, T, N = 4, 15, NUM_TOKENS
 
-        emissions = torch.rand(B, T, N)
-
-        return emissions
+        return torch.rand(B, T, N)
 
     @parameterized.expand(
         list(

@@ -142,9 +142,7 @@ def spectrogram(
     if window_norm:
         spec_f /= window.pow(2.0).sum().sqrt()
     if power is not None:
-        if power == 1.0:
-            return spec_f.abs()
-        return spec_f.abs().pow(power)
+        return spec_f.abs() if power == 1.0 else spec_f.abs().pow(power)
     return spec_f
 
 
@@ -232,7 +230,7 @@ def _get_spec_norms(normalized: Union[str, bool]):
     frame_length_norm, window_norm = False, False
     if torch.jit.isinstance(normalized, str):
         if normalized not in ["frame_length", "window"]:
-            raise ValueError("Invalid normalized parameter: {}".format(normalized))
+            raise ValueError(f"Invalid normalized parameter: {normalized}")
         if normalized == "frame_length":
             frame_length_norm = True
         elif normalized == "window":
@@ -298,9 +296,9 @@ def griffinlim(
         Tensor: waveform of `(..., time)`, where time equals the ``length`` parameter if given.
     """
     if not 0 <= momentum < 1:
-        raise ValueError("momentum must be in range [0, 1). Found: {}".format(momentum))
+        raise ValueError(f"momentum must be in range [0, 1). Found: {momentum}")
 
-    momentum = momentum / (1 + momentum)
+    momentum /= 1 + momentum
 
     # pack batch
     shape = specgram.size()
@@ -505,9 +503,7 @@ def _create_triangular_filterbank(
     zero = torch.zeros(1)
     down_slopes = (-1.0 * slopes[:, :-2]) / f_diff[:-1]  # (n_freqs, n_filter)
     up_slopes = slopes[:, 2:] / f_diff[1:]  # (n_freqs, n_filter)
-    fb = torch.max(zero, torch.min(down_slopes, up_slopes))
-
-    return fb
+    return torch.max(zero, torch.min(down_slopes, up_slopes))
 
 
 def melscale_fbanks(
@@ -622,10 +618,7 @@ def linear_fbanks(
     # filter mid-points
     f_pts = torch.linspace(f_min, f_max, n_filter + 2)
 
-    # create filterbank
-    fb = _create_triangular_filterbank(all_freqs, f_pts)
-
-    return fb
+    return _create_triangular_filterbank(all_freqs, f_pts)
 
 
 def create_dct(n_mfcc: int, n_mels: int, norm: Optional[str]) -> Tensor:
@@ -799,10 +792,7 @@ def phase_vocoder(complex_specgrams: Tensor, rate: float, phase_advance: Tensor)
 
 
 def _get_mask_param(mask_param: int, p: float, axis_length: int) -> int:
-    if p == 1.0:
-        return mask_param
-    else:
-        return min(mask_param, int(axis_length * p))
+    return mask_param if p == 1.0 else min(mask_param, int(axis_length * p))
 
 
 def mask_along_axis_iid(
@@ -1042,9 +1032,7 @@ def _compute_nccf(waveform: Tensor, sample_rate: int, frame_time: float, freq_lo
 
         output_lag.append(output_frames.unsqueeze(-1))
 
-    nccf = torch.cat(output_lag, -1)
-
-    return nccf
+    return torch.cat(output_lag, -1)
 
 
 def _combine_max(a: Tuple[Tensor, Tensor], b: Tuple[Tensor, Tensor], thresh: float = 0.99) -> Tuple[Tensor, Tensor]:
@@ -1204,8 +1192,7 @@ def sliding_window_cmn(
         if window_end > num_frames:
             window_start -= window_end - num_frames
             window_end = num_frames
-            if window_start < 0:
-                window_start = 0
+            window_start = max(window_start, 0)
         if last_window_start == -1:
             input_part = specgram[:, window_start : window_end - window_start, :]
             cur_sum += torch.sum(input_part, 1)
@@ -1456,17 +1443,7 @@ def _get_sinc_resample_kernel(
     device: torch.device = torch.device("cpu"),
     dtype: Optional[torch.dtype] = None,
 ):
-    if not (int(orig_freq) == orig_freq and int(new_freq) == new_freq):
-        raise Exception(
-            "Frequencies must be of integer type to ensure quality resampling computation. "
-            "To work around this, manually convert both frequencies to integer values "
-            "that maintain their resampling rate ratio before passing them into the function. "
-            "Example: To downsample a 44100 hz waveform by a factor of 8, use "
-            "`orig_freq=8` and `new_freq=1` instead of `orig_freq=44100` and `new_freq=5512.5`. "
-            "For more information, please refer to https://github.com/pytorch/audio/issues/1487."
-        )
-
-    if resampling_method in ["sinc_interpolation", "kaiser_window"]:
+    if resampling_method in {"sinc_interpolation", "kaiser_window"}:
         method_map = {
             "sinc_interpolation": "sinc_interp_hann",
             "kaiser_window": "sinc_interp_kaiser",
@@ -1477,10 +1454,10 @@ def _get_sinc_resample_kernel(
             "The default behavior remains unchanged."
         )
     elif resampling_method not in ["sinc_interp_hann", "sinc_interp_kaiser"]:
-        raise ValueError("Invalid resampling method: {}".format(resampling_method))
+        raise ValueError(f"Invalid resampling method: {resampling_method}")
 
-    orig_freq = int(orig_freq) // gcd
-    new_freq = int(new_freq) // gcd
+    orig_freq //= gcd
+    new_freq //= gcd
 
     if lowpass_filter_width <= 0:
         raise ValueError("Low pass filter width should be positive.")
@@ -1555,8 +1532,8 @@ def _apply_sinc_resample_kernel(
     if not waveform.is_floating_point():
         raise TypeError(f"Expected floating point type for waveform tensor, but received {waveform.dtype}.")
 
-    orig_freq = int(orig_freq) // gcd
-    new_freq = int(new_freq) // gcd
+    orig_freq //= gcd
+    new_freq //= gcd
 
     # pack batch
     shape = waveform.size()
@@ -1569,9 +1546,7 @@ def _apply_sinc_resample_kernel(
     target_length = int(math.ceil(new_freq * length / orig_freq))
     resampled = resampled[..., :target_length]
 
-    # unpack batch
-    resampled = resampled.view(shape[:-1] + resampled.shape[-1:])
-    return resampled
+    return resampled.view(shape[:-1] + resampled.shape[-1:])
 
 
 def resample(
@@ -1615,7 +1590,7 @@ def resample(
     if orig_freq == new_freq:
         return waveform
 
-    gcd = math.gcd(int(orig_freq), int(new_freq))
+    gcd = math.gcd(orig_freq, new_freq)
 
     kernel, width = _get_sinc_resample_kernel(
         orig_freq,
@@ -1628,8 +1603,9 @@ def resample(
         waveform.device,
         waveform.dtype,
     )
-    resampled = _apply_sinc_resample_kernel(waveform, orig_freq, new_freq, gcd, kernel, width)
-    return resampled
+    return _apply_sinc_resample_kernel(
+        waveform, orig_freq, new_freq, gcd, kernel, width
+    )
 
 
 @torch.jit.unused
@@ -1731,8 +1707,7 @@ def loudness(waveform: Tensor, sample_rate: int):
 
     energy_filtered = torch.sum(gated_blocks * energy, dim=-1) / torch.count_nonzero(gated_blocks, dim=-1)
     energy_weighted = torch.sum(g * energy_filtered, dim=-1)
-    LKFS = kweight_bias + 10 * torch.log10(energy_weighted)
-    return LKFS
+    return kweight_bias + 10 * torch.log10(energy_weighted)
 
 
 def pitch_shift(
@@ -1829,10 +1804,14 @@ def _stretch_waveform(
     phase_advance = torch.linspace(0, math.pi * hop_length, spec_f.shape[-2], device=spec_f.device)[..., None]
     spec_stretch = phase_vocoder(spec_f, rate, phase_advance)
     len_stretch = int(round(ori_len / rate))
-    waveform_stretch = torch.istft(
-        spec_stretch, n_fft=n_fft, hop_length=hop_length, win_length=win_length, window=window, length=len_stretch
+    return torch.istft(
+        spec_stretch,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        win_length=win_length,
+        window=window,
+        length=len_stretch,
     )
-    return waveform_stretch
 
 
 def _fix_waveform_shape(
@@ -2203,8 +2182,7 @@ def rtf_evd(psd_s: Tensor) -> Tensor:
     if psd_s.shape[-1] != psd_s.shape[-2]:
         raise ValueError(f"The last two dimensions of psd_s should be the same. Found {psd_s.shape}.")
     _, v = torch.linalg.eigh(psd_s)  # v is sorted along with eigenvalues in ascending order
-    rtf = v[..., -1]  # choose the eigenvector with max eigenvalue
-    return rtf
+    return v[..., -1]
 
 
 def rtf_power(
@@ -2306,9 +2284,7 @@ def apply_beamforming(beamform_weights: Tensor, specgram: Tensor) -> Tensor:
             f"Found {beamform_weights.dtype} for beamform_weights and {specgram.dtype} for specgram."
         )
 
-    # (..., freq, channel) x (..., channel, freq, time) -> (..., freq, time)
-    specgram_enhanced = torch.einsum("...fc,...cft->...ft", [beamform_weights.conj(), specgram])
-    return specgram_enhanced
+    return torch.einsum("...fc,...cft->...ft", [beamform_weights.conj(), specgram])
 
 
 def _check_shape_compatible(x: torch.Tensor, y: torch.Tensor) -> None:
@@ -2330,17 +2306,17 @@ def _check_convolve_mode(mode: str) -> None:
 
 
 def _apply_convolve_mode(conv_result: torch.Tensor, x_length: int, y_length: int, mode: str) -> torch.Tensor:
-    valid_convolve_modes = ["full", "valid", "same"]
     if mode == "full":
         return conv_result
+    elif mode == "same":
+        start_idx = (conv_result.size(-1) - x_length) // 2
+        return conv_result[..., start_idx : start_idx + x_length]
     elif mode == "valid":
         target_length = max(x_length, y_length) - min(x_length, y_length) + 1
         start_idx = (conv_result.size(-1) - target_length) // 2
         return conv_result[..., start_idx : start_idx + target_length]
-    elif mode == "same":
-        start_idx = (conv_result.size(-1) - x_length) // 2
-        return conv_result[..., start_idx : start_idx + x_length]
     else:
+        valid_convolve_modes = ["full", "valid", "same"]
         raise ValueError(f"Unrecognized mode value '{mode}'. Please specify one of {valid_convolve_modes}.")
 
 
@@ -2534,11 +2510,11 @@ def speed(
     """
 
     source_sample_rate = int(factor * orig_freq)
-    target_sample_rate = int(orig_freq)
+    target_sample_rate = orig_freq
 
     gcd = math.gcd(source_sample_rate, target_sample_rate)
-    source_sample_rate = source_sample_rate // gcd
-    target_sample_rate = target_sample_rate // gcd
+    source_sample_rate //= gcd
+    target_sample_rate //= gcd
 
     if lengths is None:
         out_lengths = None

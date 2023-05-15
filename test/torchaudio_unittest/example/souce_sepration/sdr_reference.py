@@ -87,9 +87,10 @@ def batch_SDR_torch(estimation, origin, mask=None):
     SDR_max = []
     SDR_perm = []
     for permute in perm:
-        sdr = []
-        for idx in range(len(permute)):
-            sdr.append(SDR[:, idx, permute[idx]].view(batch_size, -1))
+        sdr = [
+            SDR[:, idx, permute[idx]].view(batch_size, -1)
+            for idx in range(len(permute))
+        ]
         sdr = torch.sum(torch.cat(sdr, 1), 1)
         SDR_perm.append(sdr.view(batch_size, 1))
     SDR_perm = torch.cat(SDR_perm, 1)

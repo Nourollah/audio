@@ -85,8 +85,7 @@ def _get_paired_flist(root: str, veri_test_path: str):
 def _get_file_id(file_path: str, _ext_audio: str):
     speaker_id, youtube_id, utterance_id = file_path.split("/")[-3:]
     utterance_id = utterance_id.replace(_ext_audio, "")
-    file_id = "-".join([speaker_id, youtube_id, utterance_id])
-    return file_id
+    return "-".join([speaker_id, youtube_id, utterance_id])
 
 
 class VoxCeleb1(Dataset):

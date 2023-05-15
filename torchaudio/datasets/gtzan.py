@@ -1085,13 +1085,12 @@ class GTZAN(Dataset):
                         genre, num = name.split(".")
                         if genre in gtzan_genres and len(num) == 5 and num.isdigit():
                             self._walker.append(name)
-        else:
-            if self.subset == "training":
-                self._walker = filtered_train
-            elif self.subset == "validation":
-                self._walker = filtered_valid
-            elif self.subset == "testing":
-                self._walker = filtered_test
+        elif self.subset == "testing":
+            self._walker = filtered_test
+        elif self.subset == "training":
+            self._walker = filtered_train
+        elif self.subset == "validation":
+            self._walker = filtered_valid
 
     def __getitem__(self, n: int) -> Tuple[Tensor, int, str]:
         """Load the n-th sample from the dataset.

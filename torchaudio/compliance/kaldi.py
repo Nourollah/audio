@@ -110,7 +110,7 @@ def _feature_window_function(
             + (0.5 - blackman_coeff) * torch.cos(2 * a * window_function)
         ).to(device=device, dtype=dtype)
     else:
-        raise Exception("Invalid window type " + window_type)
+        raise Exception(f"Invalid window type {window_type}")
 
 
 def _get_log_energy(strided_input: Tensor, epsilon: Tensor, energy_floor: float) -> Tensor:
@@ -133,15 +133,17 @@ def _get_waveform_and_window_properties(
 ) -> Tuple[Tensor, int, int, int]:
     r"""Gets the waveform and window properties"""
     channel = max(channel, 0)
-    assert channel < waveform.size(0), "Invalid channel {} for size {}".format(channel, waveform.size(0))
+    assert channel < waveform.size(
+        0
+    ), f"Invalid channel {channel} for size {waveform.size(0)}"
     waveform = waveform[channel, :]  # size (n)
     window_shift = int(sample_frequency * frame_shift * MILLISECONDS_TO_SECONDS)
     window_size = int(sample_frequency * frame_length * MILLISECONDS_TO_SECONDS)
     padded_window_size = _next_power_of_2(window_size) if round_to_power_of_two else window_size
 
-    assert 2 <= window_size <= len(waveform), "choose a window size {} that is [2, {}]".format(
-        window_size, len(waveform)
-    )
+    assert (
+        2 <= window_size <= len(waveform)
+    ), f"choose a window size {window_size} that is [2, {len(waveform)}]"
     assert 0 < window_shift, "`window_shift` must be greater than 0"
     assert padded_window_size % 2 == 0, (
         "the padded `window_size` must be divisible by two." " use `round_to_power_of_two` or change `frame_length`"
@@ -458,8 +460,10 @@ def get_mel_banks(
         high_freq += nyquist
 
     assert (
-        (0.0 <= low_freq < nyquist) and (0.0 < high_freq <= nyquist) and (low_freq < high_freq)
-    ), "Bad values in options: low-freq {} and high-freq {} vs. nyquist {}".format(low_freq, high_freq, nyquist)
+        (0.0 <= low_freq < nyquist)
+        and (0.0 < high_freq <= nyquist)
+        and (low_freq < high_freq)
+    ), f"Bad values in options: low-freq {low_freq} and high-freq {high_freq} vs. nyquist {nyquist}"
 
     # fft-bin width [think of it as Nyquist-freq / half-window-length]
     fft_bin_width = sample_freq / window_length_padded
@@ -474,10 +478,10 @@ def get_mel_banks(
         vtln_high += nyquist
 
     assert vtln_warp_factor == 1.0 or (
-        (low_freq < vtln_low < high_freq) and (0.0 < vtln_high < high_freq) and (vtln_low < vtln_high)
-    ), "Bad values in options: vtln-low {} and vtln-high {}, versus " "low-freq {} and high-freq {}".format(
-        vtln_low, vtln_high, low_freq, high_freq
-    )
+        (low_freq < vtln_low < high_freq)
+        and (0.0 < vtln_high < high_freq)
+        and (vtln_low < vtln_high)
+    ), f"Bad values in options: vtln-low {vtln_low} and vtln-high {vtln_high}, versus low-freq {low_freq} and high-freq {high_freq}"
 
     bin = torch.arange(num_bins).unsqueeze(1)
     left_mel = mel_low_freq + bin * mel_freq_delta  # size(num_bins, 1)

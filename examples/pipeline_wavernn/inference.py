@@ -44,8 +44,7 @@ def parse_args():
         type=int,
         help="The overlapping time steps between batches. Only used when batch inference is used",
     )
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main(args):

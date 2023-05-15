@@ -11,11 +11,11 @@ from .common import AudioMetaData
 
 # Note: need to comply TorchScript syntax -- need annotation and no f-string
 def _fail_info(filepath: str, format: Optional[str]) -> AudioMetaData:
-    raise RuntimeError("Failed to fetch metadata from {}".format(filepath))
+    raise RuntimeError(f"Failed to fetch metadata from {filepath}")
 
 
 def _fail_info_fileobj(fileobj, format: Optional[str], buffer_size: int) -> AudioMetaData:
-    raise RuntimeError("Failed to fetch metadata from {}".format(fileobj))
+    raise RuntimeError(f"Failed to fetch metadata from {fileobj}")
 
 
 # Note: need to comply TorchScript syntax -- need annotation and no f-string
@@ -27,7 +27,7 @@ def _fail_load(
     channels_first: bool = True,
     format: Optional[str] = None,
 ) -> Tuple[torch.Tensor, int]:
-    raise RuntimeError("Failed to load audio from {}".format(filepath))
+    raise RuntimeError(f"Failed to load audio from {filepath}")
 
 
 def _fail_load_fileobj(fileobj, *args, **kwargs):

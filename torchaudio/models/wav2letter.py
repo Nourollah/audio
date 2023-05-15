@@ -55,7 +55,7 @@ class Wav2Letter(nn.Module):
             )
             self.acoustic_model = nn.Sequential(waveform_model, acoustic_model)
 
-        if input_type in ["power_spectrum", "mfcc"]:
+        if input_type in {"power_spectrum", "mfcc"}:
             self.acoustic_model = acoustic_model
 
     def forward(self, x: Tensor) -> Tensor:

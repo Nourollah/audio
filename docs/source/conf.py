@@ -109,7 +109,7 @@ def _get_pattern():
     # If BUILD_GALLERY is undefined
     #    If GALLERY_PATTERN is defined     -> build
     #    If GALLERY_PATTERN is not defined -> not build
-    if not _get_var("BUILD_GALLERY", default=False if pattern is None else True):
+    if not _get_var("BUILD_GALLERY", default=pattern is not None):
         if pattern is not None:
             print(
                 ' --- WARNING: "GALLERY_PATTERN" is provided, but "BUILD_GALLERY" value is falsy. '

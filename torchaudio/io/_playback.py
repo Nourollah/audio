@@ -37,12 +37,11 @@ def play_audio(
         device: Output device to use. If None, the default device is used.
     """
 
-    if platform == "darwin":
-        device = device or "audiotoolbox"
-        path = "-"
-    else:
+    if platform != "darwin":
         raise ValueError(f"This function only supports MacOS, but current OS is {platform}")
 
+    device = device or "audiotoolbox"
+    path = "-"
     available_devices = list(torchaudio.utils.ffmpeg_utils.get_output_devices().keys())
     if device not in available_devices:
         raise ValueError(f"Device {device} is not available. Available devices are: {available_devices}")

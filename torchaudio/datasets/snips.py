@@ -46,9 +46,9 @@ def _load_labels(file: Path, subset: str):
             index = line[0]
             trans, iob_intent = " ".join(line[1:]).split("\t")
             trans = " ".join(trans.split(" ")[1:-1])
-            iob = " ".join(iob_intent.split(" ")[1:-1])
-            intent = iob_intent.split(" ")[-1]
             if subset in index:
+                intent = iob_intent.split(" ")[-1]
+                iob = " ".join(iob_intent.split(" ")[1:-1])
                 labels[index] = (trans, iob, intent)
     return labels
 

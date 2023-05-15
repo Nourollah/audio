@@ -41,12 +41,11 @@ def load_feature(
         feat = torch.load(feat_path)
         length = torch.load(len_path).int()
         if percent < 0:
-            feats.append(feat)
             lens.append(length)
         else:
             offsets = [0] + torch.cumsum(length, dim=0, dtype=torch.int).tolist()
             nsample = int(length.shape[0] * percent)
-            indices = torch.randperm(length.shape[0])[0:nsample]
+            indices = torch.randperm(length.shape[0])[:nsample]
             indices = torch.sort(indices)[0]
             mask = []
             for i in range(indices.shape[0]):
@@ -54,8 +53,8 @@ def load_feature(
                 mask += list(range(offsets[index], offsets[index] + length[index]))
             mask = torch.tensor(mask, dtype=torch.int)
             feat = torch.index_select(feat, 0, mask)
-            feats.append(feat)
             lens.append(length[indices])
+        feats.append(feat)
     feats = torch.cat(feats)
     lens = torch.cat(lens)
     return feats, lens

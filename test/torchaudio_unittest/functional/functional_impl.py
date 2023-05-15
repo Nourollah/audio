@@ -390,9 +390,9 @@ class Functional(TestBaseMixin):
         decibels = F.amplitude_to_DB(spec, amplitude_mult, amin, db_mult, top_db=top_db)
         # Ensure the clamp was applied
         below_limit = decibels < 6.0205
-        assert not below_limit.any(), "{} decibel values were below the expected cutoff:\n{}".format(
-            below_limit.sum().item(), decibels
-        )
+        assert (
+            not below_limit.any()
+        ), f"{below_limit.sum().item()} decibel values were below the expected cutoff:\n{decibels}"
         # Ensure it didn't over-clamp
         close_to_limit = decibels < 6.0207
         assert close_to_limit.any(), f"No values were close to the limit. Did it over-clamp?\n{decibels}"
@@ -1072,11 +1072,7 @@ class Functional(TestBaseMixin):
         times = torch.arange(0, 5, 1.0 / sample_rate)
         waveform = torch.cos(2 * math.pi * freq * times).unsqueeze(0).to(self.device, self.dtype)
 
-        if use_lengths:
-            lengths = torch.tensor([waveform.size(1)])
-        else:
-            lengths = None
-
+        lengths = torch.tensor([waveform.size(1)]) if use_lengths else None
         output, output_lengths = F.speed(waveform, orig_freq=sample_rate, factor=factor, lengths=lengths)
 
         if use_lengths:

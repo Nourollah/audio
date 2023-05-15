@@ -11,7 +11,7 @@ from torchaudio_unittest import common_utils
 
 def _name_from_args(func, _, params):
     """Return a parameterized test name, based on parameter values."""
-    return "{}_{}".format(func.__name__, "_".join(str(arg) for arg in params.args))
+    return f'{func.__name__}_{"_".join(str(arg) for arg in params.args)}'
 
 
 @parameterized_class(
@@ -445,9 +445,15 @@ class TestFunctional(common_utils.TorchaudioTestCase):
         expected = []
         for i in range(leading_dims[0]):
             for j in range(leading_dims[1]):
-                for k in range(leading_dims[2]):
-                    expected.append(F.add_noise(waveform[i][j][k], noise[i][j][k], snr[i][j][k], lengths[i][j][k]))
-
+                expected.extend(
+                    F.add_noise(
+                        waveform[i][j][k],
+                        noise[i][j][k],
+                        snr[i][j][k],
+                        lengths[i][j][k],
+                    )
+                    for k in range(leading_dims[2])
+                )
         self.assertEqual(torch.stack(expected), actual.reshape(-1, L))
 
     def test_speed(self):
@@ -478,10 +484,10 @@ class TestFunctional(common_utils.TorchaudioTestCase):
         coeff = 0.9
         actual = F.preemphasis(waveform, coeff=coeff)
 
-        expected = []
-        for i in range(waveform.size(0)):
-            expected.append(F.preemphasis(waveform[i], coeff=coeff))
-
+        expected = [
+            F.preemphasis(waveform[i], coeff=coeff)
+            for i in range(waveform.size(0))
+        ]
         self.assertEqual(torch.stack(expected), actual)
 
     def test_deemphasis(self):
@@ -489,8 +495,7 @@ class TestFunctional(common_utils.TorchaudioTestCase):
         coeff = 0.9
         actual = F.deemphasis(waveform, coeff=coeff)
 
-        expected = []
-        for i in range(waveform.size(0)):
-            expected.append(F.deemphasis(waveform[i], coeff=coeff))
-
+        expected = [
+            F.deemphasis(waveform[i], coeff=coeff) for i in range(waveform.size(0))
+        ]
         self.assertEqual(torch.stack(expected), actual)

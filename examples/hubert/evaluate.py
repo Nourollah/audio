@@ -54,16 +54,11 @@ def _ctc_decode(emission, decoder: CTCDecoder) -> List[str]:
     """
     hypothesis = decoder(emission)
     hypothesis = hypothesis[0][0].words
-    hypothesis = [word for word in hypothesis if word != " "]
-    return hypothesis
+    return [word for word in hypothesis if word != " "]
 
 
 def run_inference(args):
-    if args.use_gpu:
-        device = torch.device("cuda")
-    else:
-        device = torch.device("cpu")
-
+    device = torch.device("cuda") if args.use_gpu else torch.device("cpu")
     # Load the fine-tuned HuBERTPretrainModel from checkpoint.
     model = _load_checkpoint(args.checkpoint)
     model.eval().to(device)

@@ -24,10 +24,10 @@ def _save_sample(dataset_dir: str, sample_rate: int, speaker_id: int, youtube_id
         The waveform Tensor, sample rate, speaker label, file_name, and the file path.
     """
     # add random string before youtube_id
-    youtube_id = "Zxhsj" + str(youtube_id)
-    path = os.path.join(dataset_dir, "id10" + str(speaker_id), youtube_id)
+    youtube_id = f"Zxhsj{youtube_id}"
+    path = os.path.join(dataset_dir, f"id10{speaker_id}", youtube_id)
     os.makedirs(path, exist_ok=True)
-    filename = str(utterance_id) + ".wav"
+    filename = f"{utterance_id}.wav"
     file_path = os.path.join(path, filename)
     waveform = get_whitenoise(
         sample_rate=sample_rate,
@@ -36,8 +36,8 @@ def _save_sample(dataset_dir: str, sample_rate: int, speaker_id: int, youtube_id
         seed=seed,
     )
     save_wav(file_path, waveform, sample_rate)
-    file_name = "-".join(["id10" + str(speaker_id), youtube_id, str(utterance_id)])
-    file_path = "/".join(["id10" + str(speaker_id), youtube_id, str(utterance_id) + ".wav"])
+    file_name = "-".join([f"id10{speaker_id}", youtube_id, str(utterance_id)])
+    file_path = "/".join([f"id10{speaker_id}", youtube_id, f"{utterance_id}.wav"])
     return waveform, sample_rate, speaker_id, file_name, file_path
 
 
@@ -115,10 +115,7 @@ def get_mock_veri_dataset(root_dir: str, meta_file: str):
                     waveform_spk2, sample_rate, _, file_name_spk2, file_path_spk2 = _save_sample(
                         wav_dir, sample_rate, speaker_id1, youtube_id, idx + 1, seed
                     )
-                    if speaker_id1 == speaker_id2:
-                        label = 1
-                    else:
-                        label = 0
+                    label = 1 if speaker_id1 == speaker_id2 else 0
                     sample = (waveform_spk1, waveform_spk2, sample_rate, label, file_name_spk1, file_name_spk2)
                     mocked_samples.append(sample)
                     f.write(f"{label} {file_path_spk1} {file_path_spk2}\n")

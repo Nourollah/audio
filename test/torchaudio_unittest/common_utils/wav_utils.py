@@ -45,23 +45,17 @@ def get_wav_data(
     dtype_ = getattr(torch, dtype)
 
     if num_frames is None:
-        if dtype == "uint8":
-            num_frames = 256
-        else:
-            num_frames = 1 << 16
-
-    if dtype == "uint8":
-        base = torch.linspace(0, 255, num_frames, dtype=dtype_)
-    elif dtype == "int8":
-        base = torch.linspace(-128, 127, num_frames, dtype=dtype_)
-    elif dtype == "float32":
+        num_frames = 256 if dtype == "uint8" else 1 << 16
+    if dtype in {"float32", "float64"}:
         base = torch.linspace(-1.0, 1.0, num_frames, dtype=dtype_)
-    elif dtype == "float64":
-        base = torch.linspace(-1.0, 1.0, num_frames, dtype=dtype_)
-    elif dtype == "int32":
-        base = torch.linspace(-2147483648, 2147483647, num_frames, dtype=dtype_)
     elif dtype == "int16":
         base = torch.linspace(-32768, 32767, num_frames, dtype=dtype_)
+    elif dtype == "int32":
+        base = torch.linspace(-2147483648, 2147483647, num_frames, dtype=dtype_)
+    elif dtype == "int8":
+        base = torch.linspace(-128, 127, num_frames, dtype=dtype_)
+    elif dtype == "uint8":
+        base = torch.linspace(0, 255, num_frames, dtype=dtype_)
     else:
         raise NotImplementedError(f"Unsupported dtype {dtype}")
     data = base.repeat([num_channels, 1])

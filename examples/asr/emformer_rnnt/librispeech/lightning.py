@@ -32,7 +32,7 @@ class CustomDataset(torch.utils.data.Dataset):
             for idx, fileid in enumerate(self.base_dataset._walker)
         ]
 
-        assert len(idx_target_lengths) > 0
+        assert idx_target_lengths
 
         idx_target_lengths = sorted(idx_target_lengths, key=lambda x: x[1], reverse=True)
 
@@ -44,7 +44,7 @@ class CustomDataset(torch.utils.data.Dataset):
         if fileid not in fileid_to_target_length:
             speaker_id, chapter_id, _ = fileid.split("-")
 
-            file_text = speaker_id + "-" + chapter_id + self.base_dataset._ext_txt
+            file_text = f"{speaker_id}-{chapter_id}{self.base_dataset._ext_txt}"
             file_text = os.path.join(self.base_dataset._path, speaker_id, chapter_id, file_text)
 
             with open(file_text) as ft:
@@ -194,14 +194,13 @@ class LibriSpeechRNNTModule(LightningModule):
                 ),
             ]
         )
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_size=None,
             collate_fn=self._train_collate_fn,
             num_workers=10,
             shuffle=True,
         )
-        return dataloader
 
     def val_dataloader(self):
         dataset = torch.utils.data.ConcatDataset(
@@ -216,15 +215,15 @@ class LibriSpeechRNNTModule(LightningModule):
                 ),
             ]
         )
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_size=None,
             collate_fn=self._valid_collate_fn,
             num_workers=10,
         )
-        return dataloader
 
     def test_dataloader(self):
         dataset = torchaudio.datasets.LIBRISPEECH(self.librispeech_path, url="test-clean")
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, collate_fn=self._test_collate_fn)
-        return dataloader
+        return torch.utils.data.DataLoader(
+            dataset, batch_size=1, collate_fn=self._test_collate_fn
+        )

@@ -35,7 +35,7 @@ def parameterize(*params):
 
 
 def fetch_wav_subtype(dtype, encoding, bits_per_sample):
-    subtype = {
+    if subtype := {
         (None, None): dtype2subtype(dtype),
         (None, 8): "PCM_U8",
         ("PCM_U", None): "PCM_U8",
@@ -50,7 +50,6 @@ def fetch_wav_subtype(dtype, encoding, bits_per_sample):
         ("ULAW", 8): "ULAW",
         ("ALAW", None): "ALAW",
         ("ALAW", 8): "ALAW",
-    }.get((encoding, bits_per_sample))
-    if subtype:
+    }.get((encoding, bits_per_sample)):
         return subtype
     raise ValueError(f"wav does not support ({encoding}, {bits_per_sample}).")

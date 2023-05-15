@@ -124,8 +124,7 @@ def _load_fairseq_model(input_file, data_dir=None):
 
 def _get_model(model_file, dict_dir):
     original = _load_fairseq_model(model_file, dict_dir)
-    model = import_fairseq_model(original.w2v_encoder)
-    return model
+    return import_fairseq_model(original.w2v_encoder)
 
 
 def _main():

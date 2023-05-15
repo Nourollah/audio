@@ -116,7 +116,9 @@ class LIBRISPEECH(Dataset):
                     f"Dataset not found at {self._path}. Please set `download=True` to download the dataset."
                 )
 
-        self._walker = sorted(str(p.stem) for p in Path(self._path).glob("*/*/*" + self._ext_audio))
+        self._walker = sorted(
+            str(p.stem) for p in Path(self._path).glob(f"*/*/*{self._ext_audio}")
+        )
 
     def get_metadata(self, n: int) -> Tuple[Tensor, int, str, int, int, int]:
         """Get metadata for the n-th sample from the dataset. Returns filepath instead of waveform,

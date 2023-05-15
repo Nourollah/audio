@@ -313,19 +313,6 @@ class StreamWriterCorrectnessTest(TempDirMixin, TorchaudioTestCase):
 
         assert saved.shape == chunk.shape
 
-        if format == "yuv444p":
-            # The following works if encoder_format is also yuv444p.
-            # Otherwise, the typical encoder format is yuv420p which incurs some data loss,
-            # and assertEqual fails.
-            #
-            # This is the case for libx264 encoder, but it's not always available.
-            # ffmpeg==4.2 from conda-forge (osx-arm64) comes with it but ffmpeg==5.1.2 does not.
-            # Since we do not have function to check the runtime availability of encoders,
-            # commenting it out for now.
-
-            # self.assertEqual(saved, chunk)
-            pass
-
     @nested_params(
         ["wav", "flac"],
         [8000, 16000, 44100],

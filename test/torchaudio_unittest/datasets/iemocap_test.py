@@ -59,9 +59,9 @@ def _get_samples(dataset_dir: str, session: int):
         subfolder = wav_stem[:-5]
         speaker = subfolder.split("_")[0]
 
-        wav_file = os.path.join(wav_folder, subfolder, wav_stem + ".wav")
+        wav_file = os.path.join(wav_folder, subfolder, f"{wav_stem}.wav")
         wav = _save_wav(wav_file, seed=0)
-        label = _save_label(label_folder, subfolder + ".txt", wav_stem)
+        label = _save_label(label_folder, f"{subfolder}.txt", wav_stem)
         if label == "xxx":
             continue
         sample = (wav, SAMPLE_RATE, wav_stem, label, speaker)

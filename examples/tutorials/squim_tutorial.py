@@ -254,8 +254,12 @@ plot_specgram(WAVEFORM_NOISE, 16000, "Noise Spectrogram")
 # Visualize distorted speech with 20dB SNR
 #
 
-plot_waveform(WAVEFORM_DISTORTED[0:1], f"Distorted Speech with {snr_dbs[0]}dB SNR")
-plot_specgram(WAVEFORM_DISTORTED[0:1], 16000, f"Distorted Speech with {snr_dbs[0]}dB SNR")
+plot_waveform(
+    WAVEFORM_DISTORTED[:1], f"Distorted Speech with {snr_dbs[0]}dB SNR"
+)
+plot_specgram(
+    WAVEFORM_DISTORTED[:1], 16000, f"Distorted Speech with {snr_dbs[0]}dB SNR"
+)
 
 
 ######################################################################
@@ -292,7 +296,7 @@ print(f"SI-SDR: {si_sdr_hyp[0]}\n")
 
 pesq_ref = pesq(16000, WAVEFORM_SPEECH[0].numpy(), WAVEFORM_DISTORTED[0].numpy(), mode="wb")
 stoi_ref = stoi(WAVEFORM_SPEECH[0].numpy(), WAVEFORM_DISTORTED[0].numpy(), 16000, extended=False)
-si_sdr_ref = si_snr(WAVEFORM_DISTORTED[0:1], WAVEFORM_SPEECH)
+si_sdr_ref = si_snr(WAVEFORM_DISTORTED[:1], WAVEFORM_SPEECH)
 print(f"Reference metrics for distorted speech at {snr_dbs[0]}dB are\n")
 print(f"STOI: {stoi_ref}")
 print(f"PESQ: {pesq_ref}")

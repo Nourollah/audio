@@ -158,36 +158,37 @@ class MuSTCRNNTModule(LightningModule):
 
     def train_dataloader(self):
         dataset = CustomDataset(MUSTC(self.mustc_path, subset="train"), 100, 20)
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_size=None,
             collate_fn=self._train_collate_fn,
             num_workers=10,
             shuffle=True,
         )
-        return dataloader
 
     def val_dataloader(self):
         dataset = CustomDataset(MUSTC(self.mustc_path, subset="dev"), 100, 20)
-        dataloader = torch.utils.data.DataLoader(
+        return torch.utils.data.DataLoader(
             dataset,
             batch_size=None,
             collate_fn=self._valid_collate_fn,
             num_workers=10,
         )
-        return dataloader
 
     def test_common_dataloader(self):
         dataset = MUSTC(self.mustc_path, subset="tst-COMMON")
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, collate_fn=self._test_collate_fn)
-        return dataloader
+        return torch.utils.data.DataLoader(
+            dataset, batch_size=1, collate_fn=self._test_collate_fn
+        )
 
     def test_he_dataloader(self):
         dataset = MUSTC(self.mustc_path, subset="tst-HE")
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, collate_fn=self._test_collate_fn)
-        return dataloader
+        return torch.utils.data.DataLoader(
+            dataset, batch_size=1, collate_fn=self._test_collate_fn
+        )
 
     def dev_dataloader(self):
         dataset = MUSTC(self.mustc_path, subset="dev")
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, collate_fn=self._test_collate_fn)
-        return dataloader
+        return torch.utils.data.DataLoader(
+            dataset, batch_size=1, collate_fn=self._test_collate_fn
+        )

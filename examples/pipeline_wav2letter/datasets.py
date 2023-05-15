@@ -61,11 +61,7 @@ def split_process_librispeech(
 
         if isinstance(tags, str):
             tags = [tags]
-        if isinstance(transforms, list):
-            transform_list = transforms
-        else:
-            transform_list = [transforms]
-
+        transform_list = transforms if isinstance(transforms, list) else [transforms]
         data = torch.utils.data.ConcatDataset(
             [
                 Processed(

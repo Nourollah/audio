@@ -49,9 +49,10 @@ class DR_VCTK(Dataset):
 
         if not self._path.is_dir():
             if not archive.is_file():
-                if not download:
+                if download:
+                    download_url_to_file(url, archive, hash_prefix=_CHECKSUM)
+                else:
                     raise RuntimeError("Dataset not found. Please use `download=True` to download it.")
-                download_url_to_file(url, archive, hash_prefix=_CHECKSUM)
             _extract_zip(archive, root)
 
         self._config = self._load_config(self._config_filepath)

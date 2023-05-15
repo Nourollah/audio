@@ -64,25 +64,18 @@ class TEDLIUM(Dataset):
         audio_ext: str = ".sph",
     ) -> None:
         self._ext_audio = audio_ext
-        if release in _RELEASE_CONFIGS.keys():
-            folder_in_archive = _RELEASE_CONFIGS[release]["folder_in_archive"]
-            url = _RELEASE_CONFIGS[release]["url"]
-            subset = subset if subset else _RELEASE_CONFIGS[release]["subset"]
-        else:
+        if release not in _RELEASE_CONFIGS.keys():
             # Raise warning
             raise RuntimeError(
-                "The release {} does not match any of the supported tedlium releases{} ".format(
-                    release,
-                    _RELEASE_CONFIGS.keys(),
-                )
+                f"The release {release} does not match any of the supported tedlium releases{_RELEASE_CONFIGS.keys()} "
             )
+        folder_in_archive = _RELEASE_CONFIGS[release]["folder_in_archive"]
+        url = _RELEASE_CONFIGS[release]["url"]
+        subset = subset if subset else _RELEASE_CONFIGS[release]["subset"]
         if subset not in _RELEASE_CONFIGS[release]["supported_subsets"]:
             # Raise warning
             raise RuntimeError(
-                "The subset {} does not match any of the supported tedlium subsets{} ".format(
-                    subset,
-                    _RELEASE_CONFIGS[release]["supported_subsets"],
-                )
+                f'The subset {subset} does not match any of the supported tedlium subsets{_RELEASE_CONFIGS[release]["supported_subsets"]} '
             )
 
         # Get string representation of 'root' in case Path object is passed
@@ -107,12 +100,11 @@ class TEDLIUM(Dataset):
                     checksum = _RELEASE_CONFIGS[release]["checksum"]
                     download_url_to_file(url, archive, hash_prefix=checksum)
                 _extract_tar(archive)
-        else:
-            if not os.path.exists(self._path):
-                raise RuntimeError(
-                    f"The path {self._path} doesn't exist. "
-                    "Please check the ``root`` path or set `download=True` to download it"
-                )
+        elif not os.path.exists(self._path):
+            raise RuntimeError(
+                f"The path {self._path} doesn't exist. "
+                "Please check the ``root`` path or set `download=True` to download it"
+            )
 
         # Create list for all samples
         self._filelist = []
@@ -141,7 +133,7 @@ class TEDLIUM(Dataset):
             ``(waveform, sample_rate, transcript, talk_id, speaker_id, identifier)``
         """
         transcript_path = os.path.join(path, "stm", fileid)
-        with open(transcript_path + ".stm") as f:
+        with open(f"{transcript_path}.stm") as f:
             transcript = f.readlines()[line]
             talk_id, _, speaker_id, start_time, end_time, identifier, transcript = transcript.split(" ", 6)
 
@@ -163,8 +155,8 @@ class TEDLIUM(Dataset):
         Returns:
             [Tensor, int]: Audio tensor representation and sample rate
         """
-        start_time = int(float(start_time) * sample_rate)
-        end_time = int(float(end_time) * sample_rate)
+        start_time = int(start_time * sample_rate)
+        end_time = int(end_time * sample_rate)
 
         kwargs = {"frame_offset": start_time, "num_frames": end_time - start_time}
 
@@ -212,7 +204,7 @@ class TEDLIUM(Dataset):
         if not self._phoneme_dict:
             self._phoneme_dict = {}
             with open(self._dict_path, "r", encoding="utf-8") as f:
-                for line in f.readlines():
+                for line in f:
                     content = line.strip().split()
                     self._phoneme_dict[content[0]] = tuple(content[1:])  # content[1:] can be empty list
         return self._phoneme_dict.copy()

@@ -64,9 +64,7 @@ def post_process_hypos(
     hypos_ids = [h[tokens_idx][1:] for h in hypos]
     hypos_score = [[math.exp(h[score_idx])] for h in hypos]
 
-    nbest_batch = list(zip(hypos_str, hypos_score, hypos_ids))
-
-    return nbest_batch
+    return list(zip(hypos_str, hypos_score, hypos_ids))
 
 
 class FunctionalModule(torch.nn.Module):

@@ -374,7 +374,7 @@ class FunctionalTestImpl(TestBaseMixin):
         # use both filters.
         mix = F.filter_waveform(waveform, kernels)
         # use only one of them
-        ref1 = F.filter_waveform(waveform[:10], kernels[0:1])
+        ref1 = F.filter_waveform(waveform[:10], kernels[:1])
         ref2 = F.filter_waveform(waveform[10:], kernels[1:2])
 
         print("mix:", mix)
@@ -495,7 +495,7 @@ class FunctionalCPUOnlyTestImpl(TestBaseMixin):
         room.add_microphone_array(mic_locs)
         room.add_source(source.tolist())
         room.compute_rir()
-        max_len = max([room.rir[i][0].shape[0] for i in range(channel)])
+        max_len = max(room.rir[i][0].shape[0] for i in range(channel))
         expected = torch.zeros(channel, max_len, dtype=self.dtype, device=self.device)
         for i in range(channel):
             expected[i, 0 : room.rir[i][0].shape[0]] = torch.from_numpy(room.rir[i][0])
@@ -539,7 +539,7 @@ class FunctionalCPUOnlyTestImpl(TestBaseMixin):
         room.add_microphone_array(mic_locs)
         room.add_source(source.tolist())
         room.compute_rir()
-        max_len = max([room.rir[i][0].shape[0] for i in range(channel)])
+        max_len = max(room.rir[i][0].shape[0] for i in range(channel))
         expected = torch.zeros(channel, max_len, dtype=self.dtype, device=self.device)
         for i in range(channel):
             expected[i, 0 : room.rir[i][0].shape[0]] = torch.from_numpy(room.rir[i][0])

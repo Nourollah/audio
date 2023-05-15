@@ -43,7 +43,7 @@ def save_checkpoint(state, is_best, filename):
 
     if is_best:
         path, best_filename = os.path.split(filename)
-        best_filename = os.path.join(path, "best_" + best_filename)
+        best_filename = os.path.join(path, f"best_{best_filename}")
         shutil.copyfile(filename, best_filename)
         logging.info(f"Current best checkpoint saved to {best_filename}")
 
@@ -66,9 +66,6 @@ def pad_sequences(batch: List[Tensor]) -> Tuple[Tensor, Tensor]:
 
 
 def prepare_input_sequence(texts: List[str], text_processor: Callable[[str], List[int]]) -> Tuple[Tensor, Tensor]:
-    d = []
-    for text in texts:
-        d.append(torch.IntTensor(text_processor(text)[:]))
-
+    d = [torch.IntTensor(text_processor(text)[:]) for text in texts]
     text_padded, input_lengths = pad_sequences(d)
     return text_padded, input_lengths

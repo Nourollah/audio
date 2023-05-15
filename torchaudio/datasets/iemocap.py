@@ -65,10 +65,10 @@ class IEMOCAP(Dataset):
             # add labels
             label_dir = session_dir / "dialog" / "EmoEvaluation"
             query = "*.txt"
-            if utterance_type == "scripted":
-                query = "*script*.txt"
-            elif utterance_type == "improvised":
+            if utterance_type == "improvised":
                 query = "*impro*.txt"
+            elif utterance_type == "scripted":
+                query = "*script*.txt"
             label_paths = label_dir.glob(query)
 
             for label_path in label_paths:
@@ -83,9 +83,7 @@ class IEMOCAP(Dataset):
                             continue
                         if label not in ["neu", "hap", "ang", "sad", "exc", "fru"]:
                             continue
-                        self.mapping[wav_stem] = {}
-                        self.mapping[wav_stem]["label"] = label
-
+                        self.mapping[wav_stem] = {"label": label}
             for wav_path in wav_paths:
                 wav_stem = str(Path(wav_path).stem)
                 if wav_stem in self.mapping:

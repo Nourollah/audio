@@ -10,10 +10,9 @@ __all__ = ["Emformer"]
 def _lengths_to_padding_mask(lengths: torch.Tensor) -> torch.Tensor:
     batch_size = lengths.shape[0]
     max_length = int(torch.max(lengths).item())
-    padding_mask = torch.arange(max_length, device=lengths.device, dtype=lengths.dtype).expand(
-        batch_size, max_length
-    ) >= lengths.unsqueeze(1)
-    return padding_mask
+    return torch.arange(
+        max_length, device=lengths.device, dtype=lengths.dtype
+    ).expand(batch_size, max_length) >= lengths.unsqueeze(1)
 
 
 def _gen_padding_mask(
@@ -27,13 +26,11 @@ def _gen_padding_mask(
     T = right_context.size(0) + utterance.size(0) + summary.size(0)
     B = right_context.size(1)
     if B == 1:
-        padding_mask = None
-    else:
-        right_context_blocks_length = T - torch.max(lengths).int() - summary.size(0)
-        left_context_blocks_length = left_context_key.size(0) if left_context_key is not None else 0
-        klengths = lengths + mems.size(0) + right_context_blocks_length + left_context_blocks_length
-        padding_mask = _lengths_to_padding_mask(lengths=klengths)
-    return padding_mask
+        return None
+    right_context_blocks_length = T - torch.max(lengths).int() - summary.size(0)
+    left_context_blocks_length = left_context_key.size(0) if left_context_key is not None else 0
+    klengths = lengths + mems.size(0) + right_context_blocks_length + left_context_blocks_length
+    return _lengths_to_padding_mask(lengths=klengths)
 
 
 def _get_activation_module(activation: str) -> torch.nn.Module:
@@ -53,7 +50,7 @@ def _get_weight_init_gains(weight_init_scale_strategy: Optional[str], num_layers
     elif weight_init_scale_strategy == "depthwise":
         return [1.0 / math.sqrt(layer_idx + 1) for layer_idx in range(num_layers)]
     elif weight_init_scale_strategy == "constant":
-        return [1.0 / math.sqrt(2) for layer_idx in range(num_layers)]
+        return [1.0 / math.sqrt(2) for _ in range(num_layers)]
     else:
         raise ValueError(f"Unsupported weight_init_scale_strategy value {weight_init_scale_strategy}")
 
@@ -635,7 +632,7 @@ class _EmformerImpl(torch.nn.Module):
         if self.use_mem:
             m_start = max(seg_idx - self.max_memory_size, 0)
             mem_length = num_segs - 1
-            col_widths = [
+            return [
                 m_start,  # before memory
                 seg_idx - m_start,  # memory
                 mem_length - seg_idx,  # after memory
@@ -647,7 +644,7 @@ class _EmformerImpl(torch.nn.Module):
                 utterance_length - seg_end,  # after query segment
             ]
         else:
-            col_widths = [
+            return [
                 rc_start,  # before right context
                 rc,  # right context
                 rc_length - rc_end,  # after right context
@@ -655,8 +652,6 @@ class _EmformerImpl(torch.nn.Module):
                 seg_end - seg_start,  # query segment
                 utterance_length - seg_end,  # after query segment
             ]
-
-        return col_widths
 
     def _gen_attention_mask(self, input: torch.Tensor) -> torch.Tensor:
         utterance_length = input.size(0)
@@ -703,8 +698,9 @@ class _EmformerImpl(torch.nn.Module):
                 summary_mask_block = _gen_attention_mask_block(col_widths, s_cols_mask, 1, input.device)
                 summary_mask.append(summary_mask_block)
 
-        attention_mask = (1 - torch.cat([torch.cat(mask) for mask in masks_to_concat])).to(torch.bool)
-        return attention_mask
+        return (1 - torch.cat([torch.cat(mask) for mask in masks_to_concat])).to(
+            torch.bool
+        )
 
     def forward(self, input: torch.Tensor, lengths: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         r"""Forward pass for training and non-streaming inference.

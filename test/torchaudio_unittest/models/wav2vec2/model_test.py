@@ -419,8 +419,12 @@ def _compute_label_frame(audio_frame: int) -> int:
     kernel_size = 25
     stride = 20
     sample_rate = 16  # 16 per millisecond
-    label_frame = math.floor((audio_frame - kernel_size * sample_rate) / (stride * sample_rate)) + 1
-    return label_frame
+    return (
+        math.floor(
+            (audio_frame - kernel_size * sample_rate) / (stride * sample_rate)
+        )
+        + 1
+    )
 
 
 class TestHuBERTPretrainModel(TorchaudioTestCase):
